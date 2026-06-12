@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Licensing Guide</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  :root[data-theme="light"] {
+    --bg-page:       #f4f5f7;
+    --bg-surface:    #ffffff;
+    --bg-raised:     #ffffff;
+    --bg-subtle:     #f1f3f5;
+    --bg-info:       #e6f1fb;
+    --bg-success:    #eaf3de;
+    --bg-warning:    #faeeda;
+    --bg-danger:     #fcebeb;
+    --text-primary:  #1a1a1a;
+    --text-secondary:#555e68;
+    --text-tertiary: #8a94a0;
+    --text-info:     #185fa5;
+    --text-success:  #3b6d11;
+    --text-warning:  #854f0b;
+    --text-danger:   #a32d2d;
+    --border:        rgba(0,0,0,0.09);
+    --border-med:    rgba(0,0,0,0.15);
+    --border-info:   #b5d4f4;
+    --border-success:#c0dd97;
+    --border-warning:#fac775;
+    --border-danger: #f7c1c1;
+    --nav-bg:        #ffffff;
+    --nav-active-bg: #e6f1fb;
+    --nav-active-text:#185fa5;
+    --nav-active-border:#185fa5;
+    --header-bg:     #ffffff;
+    --shadow:        0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --toggle-bg:     #e2e8f0;
+    --toggle-knob:   #ffffff;
+    --toggle-icon:   #64748b;
+  }
+  :root[data-theme="dark"] {
+    --bg-page:       #0f1117;
+    --bg-surface:    #1a1d27;
+    --bg-raised:     #222536;
+    --bg-subtle:     #1e2130;
+    --bg-info:       #0c2340;
+    --bg-success:    #0d2a10;
+    --bg-warning:    #2a1a04;
+    --bg-danger:     #2a0d0d;
+    --text-primary:  #e8eaf0;
+    --text-secondary:#a0a8b8;
+    --text-tertiary: #606880;
+    --text-info:     #85b7eb;
+    --text-success:  #97c459;
+    --text-warning:  #ef9f27;
+    --text-danger:   #f09595;
+    --border:        rgba(255,255,255,0.08);
+    --border-med:    rgba(255,255,255,0.14);
+    --border-info:   #185fa5;
+    --border-success:#3b6d11;
+    --border-warning:#854f0b;
+    --border-danger: #a32d2d;
+    --nav-bg:        #1a1d27;
+    --nav-active-bg: #0c2340;
+    --nav-active-text:#85b7eb;
+    --nav-active-border:#378add;
+    --header-bg:     #1a1d27;
+    --shadow:        0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --toggle-bg:     #2d3748;
+    --toggle-knob:   #4a5568;
+    --toggle-icon:   #e2e8f0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: background .2s, color .2s;
+  }
+
+  /* ── LAYOUT ── */
+  .shell { display: flex; flex-direction: column; min-height: 100vh; }
+
+  .header {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .header-brand { display: flex; align-items: center; gap: 10px; }
+  .header-brand .logo {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+  }
+  .header-title { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+  .header-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 1px; }
+
+  .theme-toggle {
+    display: flex; align-items: center; gap: 8px;
+    background: none; border: none; cursor: pointer; color: var(--text-secondary);
+    font-size: 13px; padding: 6px 10px; border-radius: 8px;
+    transition: background .15s;
+  }
+  .theme-toggle:hover { background: var(--bg-subtle); }
+  .toggle-track {
+    width: 40px; height: 22px; border-radius: 11px;
+    background: var(--toggle-bg); position: relative;
+    transition: background .2s; flex-shrink: 0;
+  }
+  .toggle-knob {
+    width: 18px; height: 18px; border-radius: 50%;
+    background: var(--toggle-knob); position: absolute;
+    top: 2px; left: 2px;
+    transition: transform .2s, background .2s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  [data-theme="dark"] .toggle-knob { transform: translateX(18px); background: #93c5fd; }
+  [data-theme="dark"] .toggle-track { background: #1e40af; }
+
+  .body { display: flex; flex: 1; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px; flex-shrink: 0;
+    background: var(--nav-bg);
+    border-right: 1px solid var(--border);
+    padding: 16px 0;
+    position: sticky; top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+  .nav-group { margin-bottom: 4px; }
+  .nav-group-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--text-tertiary);
+    padding: 10px 18px 4px; display: block;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 8px 18px; cursor: pointer;
+    font-size: 13px; color: var(--text-secondary);
+    border-left: 3px solid transparent;
+    background: none; border-top: none; border-right: none; border-bottom: none;
+    width: 100%; text-align: left;
+    transition: background .12s, color .12s;
+  }
+  .nav-item:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .nav-item.active {
+    background: var(--nav-active-bg);
+    color: var(--nav-active-text);
+    border-left-color: var(--nav-active-border);
+    font-weight: 500;
+  }
+  .nav-item i { font-size: 16px; flex-shrink: 0; }
+
+  /* ── CONTENT ── */
+  .main { flex: 1; padding: 28px 32px; max-width: 900px; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── PRODUCT HEADER ── */
+  .product-header {
+    display: flex; align-items: flex-start; gap: 14px;
+    margin-bottom: 20px; padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .product-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-size: 20px;
+  }
+  .product-title { font-size: 22px; font-weight: 600; color: var(--text-primary); line-height: 1.2; }
+  .product-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--text-tertiary);
+    margin: 20px 0 10px;
+  }
+
+  /* ── SKU CARDS ── */
+  .sku-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px; margin-bottom: 8px; }
+  .sku-card {
+    background: var(--bg-raised); border: 1px solid var(--border);
+    border-radius: 12px; padding: 16px;
+    transition: box-shadow .15s;
+  }
+  .sku-card:hover { box-shadow: var(--shadow); }
+  .sku-card.featured { border: 2px solid var(--border-info); }
+  .sku-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .sku-price { font-size: 26px; font-weight: 700; color: var(--text-primary); margin: 8px 0 2px; }
+  .sku-price-unit { font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; }
+  .feat { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  .feat li { font-size: 12px; color: var(--text-secondary); display: flex; gap: 7px; align-items: flex-start; line-height: 1.4; }
+  .feat li i { font-size: 14px; flex-shrink: 0; margin-top: 0px; }
+  .feat li i.ok  { color: var(--text-success); }
+  .feat li i.no  { color: var(--text-tertiary); }
+  .feat li i.warn { color: var(--text-warning); }
+
+  /* ── BADGES ── */
+  .badge { display: inline-block; font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 500; }
+  .bi { background: var(--bg-info);    color: var(--text-info); }
+  .bw { background: var(--bg-warning); color: var(--text-warning); }
+  .bs { background: var(--bg-success); color: var(--text-success); }
+  .bd { background: var(--bg-danger);  color: var(--text-danger); }
+
+  /* ── PACK CARDS ── */
+  .pack-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 8px; }
+  .pack-card { background: var(--bg-subtle); border-radius: 10px; padding: 12px; }
+  .pack-name { font-size: 12px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+  .pack-detail { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* ── NOTE BOXES ── */
+  .note-box {
+    border-radius: 10px; padding: 12px 14px; margin-top: 14px;
+    font-size: 12px; display: flex; gap: 10px;
+    align-items: flex-start; line-height: 1.6;
+  }
+  .note-box i { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .warn-box  { background: var(--bg-warning); border: 1px solid var(--border-warning); color: var(--text-warning); }
+  .info-box  { background: var(--bg-info);    border: 1px solid var(--border-info);    color: var(--text-info); }
+  .ok-box    { background: var(--bg-success); border: 1px solid var(--border-success); color: var(--text-success); }
+  .danger-box{ background: var(--bg-danger);  border: 1px solid var(--border-danger);  color: var(--text-danger); }
+
+  /* ── PRICE HERO ── */
+  .price-hero {
+    background: var(--bg-raised); border: 2px solid var(--border-info);
+    border-radius: 12px; padding: 20px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .price-big { font-size: 42px; font-weight: 700; color: var(--text-primary); }
+  .price-meta { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+  .price-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+
+  /* ── BUNDLE ITEMS ── */
+  .bundle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-bottom: 8px; }
+  .bundle-item { background: var(--bg-subtle); border-radius: 10px; padding: 12px; border-left: 3px solid; }
+  .bundle-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--text-tertiary); margin-bottom: 4px; }
+  .bundle-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .bundle-features { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  .bundle-features li { font-size: 11px; color: var(--text-secondary); display: flex; gap: 5px; align-items: flex-start; line-height: 1.4; }
+  .bundle-features li i { font-size: 13px; color: var(--text-success); flex-shrink: 0; margin-top: 1px; }
+
+  /* ── TABLE ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 8px; }
+  .data-table th {
+    text-align: left; padding: 9px 12px; font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .06em; color: var(--text-tertiary);
+    border-bottom: 1px solid var(--border); background: var(--bg-subtle);
+  }
+  .data-table th:first-child { border-radius: 8px 0 0 0; }
+  .data-table th:last-child  { border-radius: 0 8px 0 0; }
+  .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: middle; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table td:first-child { font-weight: 600; color: var(--text-primary); }
+  .data-table tr:hover td { background: var(--bg-subtle); }
+  .table-wrap { background: var(--bg-raised); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--border); margin: 20px 0; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-brand">
+      <div class="logo"><i class="ti ti-book-2"></i></div>
+      <div>
+        <div class="header-title">Microsoft Licensing Guide</div>
+        <div class="header-sub">Power Platform · Copilot · Dynamics 365</div>
+      </div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+      <i class="ti ti-moon" id="theme-icon" style="font-size:16px"></i>
+      <span id="theme-label">Dark mode</span>
+      <div class="toggle-track"><div class="toggle-knob"></div></div>
+    </button>
+  </header>
+
+  <div class="body">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" aria-label="Product navigation">
+      <div class="nav-group">
+        <span class="nav-group-label">Power Platform</span>
+        <button class="nav-item active" onclick="show('pa', this)"><i class="ti ti-bolt"></i>Power Automate</button>
+        <button class="nav-item" onclick="show('apps', this)"><i class="ti ti-apps"></i>Power Apps</button>
+        <button class="nav-item" onclick="show('cs', this)"><i class="ti ti-messages"></i>Copilot Studio</button>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-label">AI &amp; Copilot</span>
+        <button class="nav-item" onclick="show('cop', this)"><i class="ti ti-robot"></i>M365 Copilot</button>
+        <button class="nav-item" onclick="show('a365', this)"><i class="ti ti-cpu"></i>Agent 365</button>
+        <button class="nav-item" onclick="show('e7', this)"><i class="ti ti-stack"></i>Microsoft 365 E7</button>
+      </div>
+      <div class="nav-group">
+        <span class="nav-group-label">Dynamics 365</span>
+        <button class="nav-item" onclick="show('bc', this)"><i class="ti ti-building-store"></i>Business Central</button>
+        <button class="nav-item" onclick="show('ce', this)"><i class="ti ti-users-group"></i>Customer Engagement</button>
+        <button class="nav-item" onclick="show('sales', this)"><i class="ti ti-currency-dollar"></i>Sales Enterprise</button>
+      </div>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="main">
+
+      <!-- ══ POWER AUTOMATE ══ -->
+      <div id="page-pa" class="page active">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-info)"><i class="ti ti-bolt" style="color:var(--text-info)"></i></div>
+          <div>
+            <div class="product-title">Power Automate</div>
+            <div class="product-subtitle">Automate workflows across apps and services — cloud flows, desktop RPA, and AI-assisted automation</div>
+          </div>
+        </div>
+
+        <div class="note-box ok-box"><i class="ti ti-gift"></i><div><strong>Included in Microsoft 365</strong> — standard connectors only (SharePoint, Outlook, Teams, OneDrive). Premium connectors, Dataverse, or RPA always require a paid license.</div></div>
+
+        <div class="section-label">User licenses</div>
+        <div class="sku-grid">
+          <div class="sku-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Free</span><span class="badge bs">No cost</span></div>
+            <div class="sku-price">£0</div><div class="sku-price-unit">per user / month</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Standard connectors</li>
+              <li><i class="ti ti-check ok"></i>Limited cloud flows</li>
+              <li><i class="ti ti-x no"></i>No premium connectors</li>
+              <li><i class="ti ti-x no"></i>No Dataverse</li>
+              <li><i class="ti ti-x no"></i>No RPA / desktop flows</li>
+            </ul>
+          </div>
+          <div class="sku-card featured">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Premium</span><span class="badge bi">Most popular</span></div>
+            <div class="sku-price">~£12</div><div class="sku-price-unit">per user / month (annual)</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>All standard + premium connectors</li>
+              <li><i class="ti ti-check ok"></i>Custom connectors</li>
+              <li><i class="ti ti-check ok"></i>Dataverse (250 MB/user)</li>
+              <li><i class="ti ti-check ok"></i>Attended RPA (desktop flows)</li>
+              <li><i class="ti ti-check ok"></i>Process &amp; task mining</li>
+              <li><i class="ti ti-check ok"></i>5,000 AI Builder credits/month</li>
+              <li><i class="ti ti-check ok"></i>Managed Environments</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-label">Capacity / bot licenses <span style="text-transform:none;font-weight:400;font-size:11px;color:var(--text-tertiary)">— assigned to a flow or machine, not a person</span></div>
+        <div class="sku-grid">
+          <div class="sku-card">
+            <div class="sku-name" style="margin-bottom:6px">Process</div>
+            <div class="sku-price">~£120</div><div class="sku-price-unit">per bot / month</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Unattended RPA</li>
+              <li><i class="ti ti-check ok"></i>Runs without a logged-in user</li>
+              <li><i class="ti ti-check ok"></i>All premium connectors</li>
+            </ul>
+          </div>
+          <div class="sku-card">
+            <div class="sku-name" style="margin-bottom:6px">Hosted Process</div>
+            <div class="sku-price">~£175</div><div class="sku-price-unit">per bot / month</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Everything in Process</li>
+              <li><i class="ti ti-check ok"></i>Microsoft-hosted VM included</li>
+              <li><i class="ti ti-check ok"></i>No own infrastructure needed</li>
+            </ul>
+          </div>
+          <div class="sku-card">
+            <div class="sku-name" style="margin-bottom:6px">Per Flow</div>
+            <div class="sku-price">~£400</div><div class="sku-price-unit">per flow / month (min 5)</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Unlimited users can trigger</li>
+              <li><i class="ti ti-check ok"></i>All premium connectors</li>
+              <li><i class="ti ti-alert-triangle warn"></i>Sold in packs of 5 minimum</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-label">Add-on packs</div>
+        <div class="pack-grid">
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-cpu" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>AI Builder credits</div><div class="pack-detail">1,000,000 credits per pack, pooled at tenant level. <strong>Retiring November 2026</strong> — new purchases should use Copilot Credits.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-database" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Dataverse storage</div><div class="pack-detail">250 MB database + 2 GB file storage per Premium user pools at tenant. Extra capacity packs available.</div></div>
+        </div>
+        <div class="note-box warn-box"><i class="ti ti-alert-triangle"></i><div>AI Builder credits seeded in Premium licenses will be removed on <strong>1 November 2026</strong>. New AI capabilities should use Copilot Credits.</div></div>
+      </div>
+
+      <!-- ══ POWER APPS ══ -->
+      <div id="page-apps" class="page">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-success)"><i class="ti ti-apps" style="color:var(--text-success)"></i></div>
+          <div>
+            <div class="product-title">Power Apps</div>
+            <div class="product-subtitle">Build custom low-code apps for web and mobile — canvas, model-driven, and portal apps</div>
+          </div>
+        </div>
+
+        <div class="note-box ok-box"><i class="ti ti-gift"></i><div><strong>Limited use included in Microsoft 365</strong> — simple canvas apps using SharePoint, Teams, or OneDrive data only. Connecting to Dataverse or premium connectors requires a paid license.</div></div>
+
+        <div class="section-label">User licenses</div>
+        <div class="sku-grid">
+          <div class="sku-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Developer</span><span class="badge bs">Free</span></div>
+            <div class="sku-price">£0</div><div class="sku-price-unit">per user / month</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Full Premium capabilities</li>
+              <li><i class="ti ti-x no"></i>Non-production / dev use only</li>
+              <li><i class="ti ti-x no"></i>Cannot share apps with others</li>
+            </ul>
+          </div>
+          <div class="sku-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Per App</span><span class="badge bw">Limited availability</span></div>
+            <div class="sku-price">~£4</div><div class="sku-price-unit">per user / app / month</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>One specific app or portal</li>
+              <li><i class="ti ti-check ok"></i>Premium connectors + Dataverse</li>
+              <li><i class="ti ti-alert-triangle warn"></i>End of sale Jan 2026 for EA/MPSA</li>
+              <li><i class="ti ti-check ok"></i>Still available via CSP channel</li>
+            </ul>
+          </div>
+          <div class="sku-card featured">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Premium</span><span class="badge bi">Recommended</span></div>
+            <div class="sku-price">~£16</div><div class="sku-price-unit">per user / month (annual)</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Unlimited apps &amp; portals</li>
+              <li><i class="ti ti-check ok"></i>All premium connectors</li>
+              <li><i class="ti ti-check ok"></i>Custom connectors</li>
+              <li><i class="ti ti-check ok"></i>Dataverse (250 MB/user)</li>
+              <li><i class="ti ti-check ok"></i>Managed Environments</li>
+              <li><i class="ti ti-check ok"></i>500 AI Builder credits/month</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-label">What counts as "premium"?</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <span class="badge bi">Dataverse</span><span class="badge bi">Salesforce</span>
+          <span class="badge bi">SAP</span><span class="badge bi">ServiceNow</span>
+          <span class="badge bi">Custom connectors</span><span class="badge bi">On-premises gateway</span>
+          <span class="badge bi">Azure services</span><span class="badge bi">SQL Server (premium)</span>
+        </div>
+        <p style="font-size:12px;color:var(--text-secondary)">Any app connecting to these requires all users of that app to hold a Premium or Per App license.</p>
+
+        <div class="section-label">Add-on packs</div>
+        <div class="pack-grid">
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-world" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Power Pages</div><div class="pack-detail">External-facing websites. Priced per authenticated or anonymous user sessions per month. Premium includes 1 internal site.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-cpu" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>AI Builder credits</div><div class="pack-detail">500 credits/month seeded per Premium user. Extra in capacity packs. Retiring November 2026.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-database" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Dataverse storage</div><div class="pack-detail">250 MB database + 2 GB file per Premium user, pooled at tenant. Add-on packs for large data volumes.</div></div>
+        </div>
+        <div class="note-box warn-box"><i class="ti ti-alert-triangle"></i><div>The <strong>Per App plan</strong> was retired for new EA/MPSA customers from January 2026. Existing EA customers keep it; CSP customers can still purchase it.</div></div>
+      </div>
+
+      <!-- ══ COPILOT STUDIO ══ -->
+      <div id="page-cs" class="page">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-danger)"><i class="ti ti-messages" style="color:var(--text-danger)"></i></div>
+          <div>
+            <div class="product-title">Copilot Studio</div>
+            <div class="product-subtitle">Build custom AI agents with no or low code — powers bots, autonomous agents, and M365 Copilot extensions</div>
+          </div>
+        </div>
+
+        <div class="note-box info-box"><i class="ti ti-info-circle"></i><div><strong>Currency changed September 2025:</strong> Copilot Studio now runs on <strong>Copilot Credits</strong> (formerly "messages"). M365 Copilot licensed users interacting in Teams/M365 apps consume 0 credits — only autonomous/unattended runs always charge.</div></div>
+
+        <div class="section-label">Purchasing options</div>
+        <div class="sku-grid">
+          <div class="sku-card">
+            <div class="sku-name" style="margin-bottom:6px">Pay-as-you-go</div>
+            <div class="sku-price">£0.01</div><div class="sku-price-unit">per Copilot Credit consumed</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>No upfront commitment</li>
+              <li><i class="ti ti-check ok"></i>Billed monthly in arrears</li>
+              <li><i class="ti ti-check ok"></i>Good for low / variable usage</li>
+              <li><i class="ti ti-x no"></i>No discount vs capacity packs</li>
+            </ul>
+          </div>
+          <div class="sku-card featured">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Capacity pack</span><span class="badge bi">Most common</span></div>
+            <div class="sku-price">~£160</div><div class="sku-price-unit">per pack / month · 25,000 credits</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>25,000 Copilot Credits included</li>
+              <li><i class="ti ti-check ok"></i>Tenant-wide pool — not per user</li>
+              <li><i class="ti ti-check ok"></i>Stack multiple packs</li>
+              <li><i class="ti ti-check ok"></i>Predictable monthly cost</li>
+            </ul>
+          </div>
+          <div class="sku-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Pre-purchase annual</span><span class="badge bs">Best value</span></div>
+            <div class="sku-price">Up to 20% off</div><div class="sku-price-unit">annual commit units (CCCUs)</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>1 CCCU = 100 credits of usage</li>
+              <li><i class="ti ti-check ok"></i>5% off at 3,000 CCCUs</li>
+              <li><i class="ti ti-check ok"></i>20% off at 3,000,000 CCCUs</li>
+              <li><i class="ti ti-check ok"></i>Drawdown across the year</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-label">Credit consumption by action type</div>
+        <div class="pack-grid">
+          <div class="pack-card"><div class="pack-name">Basic message / topic</div><div class="pack-detail"><strong style="color:var(--text-primary)">~2 credits</strong> per interaction — simple Q&amp;A or guided conversation step.</div></div>
+          <div class="pack-card"><div class="pack-name">Generative answer</div><div class="pack-detail"><strong style="color:var(--text-primary)">~10 credits</strong> — AI-generated response with or without document/web grounding.</div></div>
+          <div class="pack-card"><div class="pack-name">Connector action</div><div class="pack-detail"><strong style="color:var(--text-primary)">~5 credits</strong> per call — invoking SharePoint, a custom API, or Power Automate flow.</div></div>
+          <div class="pack-card"><div class="pack-name">Autonomous trigger</div><div class="pack-detail"><strong style="color:var(--text-primary)">~25 credits</strong> — unattended/scheduled runs. Always charged regardless of license type.</div></div>
+          <div class="pack-card"><div class="pack-name">Complex exchange (example)</div><div class="pack-detail">Generative answer + Graph grounding + 2 connector actions = <strong style="color:var(--text-primary)">~22 credits</strong> for one exchange.</div></div>
+          <div class="pack-card"><div class="pack-name">M365 Copilot users</div><div class="pack-detail">Direct interactions in Teams/M365 apps = <strong style="color:var(--text-primary)">0 credits</strong>. Autonomous runs still cost 25 credits.</div></div>
+        </div>
+        <div class="note-box info-box"><i class="ti ti-info-circle"></i><div>Use the <strong>Microsoft Copilot Studio Credit Estimator</strong> at <a href="https://microsoft.github.io/copilot-studio-estimator" target="_blank" style="color:inherit">microsoft.github.io/copilot-studio-estimator</a> to model expected monthly costs before committing to a pack size.</div></div>
+      </div>
+
+      <!-- ══ M365 COPILOT ══ -->
+      <div id="page-cop" class="page">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-warning)"><i class="ti ti-robot" style="color:var(--text-warning)"></i></div>
+          <div>
+            <div class="product-title">Microsoft 365 Copilot</div>
+            <div class="product-subtitle">AI assistant in Word, Excel, Outlook, Teams and more — add-on to a qualifying M365 base plan, or fully included in M365 E7</div>
+          </div>
+        </div>
+
+        <div class="note-box info-box"><i class="ti ti-info-circle"></i><div><strong>Copilot is an add-on, not standalone.</strong> Requires a qualifying Microsoft 365 base plan (Business Basic/Standard/Premium, E3, E5, F1, F3, or Office 365 E3/E5). Fully included in M365 E7.</div></div>
+
+        <div class="section-label">Standalone SKUs</div>
+        <div class="sku-grid">
+          <div class="sku-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Copilot Business</span><span class="badge bw">≤300 seats</span></div>
+            <div class="sku-price">~£18</div><div class="sku-price-unit">per user / month + M365 base</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Copilot in Word, Excel, PowerPoint</li>
+              <li><i class="ti ti-check ok"></i>Copilot in Outlook &amp; Teams</li>
+              <li><i class="ti ti-check ok"></i>Microsoft Graph grounding</li>
+              <li><i class="ti ti-check ok"></i>BizChat (work data context)</li>
+              <li><i class="ti ti-alert-triangle warn"></i>Maximum 300 seats</li>
+            </ul>
+          </div>
+          <div class="sku-card featured">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Copilot Enterprise</span><span class="badge bi">No seat cap</span></div>
+            <div class="sku-price">~£25</div><div class="sku-price-unit">per user / month + M365 E3/E5</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Everything in Business</li>
+              <li><i class="ti ti-check ok"></i>Copilot Studio access (internal agents)</li>
+              <li><i class="ti ti-check ok"></i>Role Copilots (Sales, Service, Finance)</li>
+              <li><i class="ti ti-check ok"></i>Multi-model: GPT + Claude</li>
+              <li><i class="ti ti-check ok"></i>Copilot analytics dashboard</li>
+            </ul>
+          </div>
+        </div>
+        <div class="note-box warn-box"><i class="ti ti-alert-triangle"></i><div>Business promo price (~£18) ends <strong>30 June 2026</strong> — standard price rises to ~£21/user/month. Pricing update effective 1 July 2026. See <strong>M365 E7</strong> in the sidebar for the all-inclusive bundle.</div></div>
+      </div>
+
+      <!-- ══ AGENT 365 ══ -->
+      <div id="page-a365" class="page">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-danger)"><i class="ti ti-cpu" style="color:var(--text-danger)"></i></div>
+          <div>
+            <div class="product-title">Agent 365</div>
+            <div class="product-subtitle">Enterprise AI agent control plane — govern, secure, and manage AI agents across your organisation, just like you manage people</div>
+          </div>
+        </div>
+
+        <div class="note-box ok-box"><i class="ti ti-gift"></i><div><strong>Free foundational tier for all Microsoft Cloud customers</strong> — basic agent inventory, identity visibility, and core admin governance at no extra cost. Advanced governance requires a paid license (or M365 E7).</div></div>
+
+        <div class="section-label">License tiers</div>
+        <div class="sku-grid">
+          <div class="sku-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Foundational</span><span class="badge bs">All M365 customers</span></div>
+            <div class="sku-price">£0</div><div class="sku-price-unit">included with any Microsoft Cloud</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Centralised agent inventory</li>
+              <li><i class="ti ti-check ok"></i>Agent identity visibility</li>
+              <li><i class="ti ti-check ok"></i>Basic usage insights</li>
+              <li><i class="ti ti-check ok"></i>Core admin governance</li>
+              <li><i class="ti ti-x no"></i>No advanced security policies</li>
+              <li><i class="ti ti-x no"></i>No threat detection</li>
+            </ul>
+          </div>
+          <div class="sku-card featured">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Agent 365 Premium</span><span class="badge bi">Included in E7</span></div>
+            <div class="sku-price">$15</div><div class="sku-price-unit">per user / month · standalone</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Everything in Foundational</li>
+              <li><i class="ti ti-check ok"></i>Advanced analytics &amp; reporting</li>
+              <li><i class="ti ti-check ok"></i>Governance policy templates</li>
+              <li><i class="ti ti-check ok"></i>Adaptive access controls</li>
+              <li><i class="ti ti-check ok"></i>Security posture management</li>
+              <li><i class="ti ti-check ok"></i>Threat detection for agents</li>
+              <li><i class="ti ti-check ok"></i>Purview data security controls</li>
+              <li><i class="ti ti-check ok"></i>Quarantine unauthorised agents</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-label">Key capabilities</div>
+        <div class="pack-grid">
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-list-check" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Agent inventory</div><div class="pack-detail">Centralised view of all AI agents — Entra-registered agents, Agent Store agents, and shadow agents running without IT approval.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-key" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Agent identity</div><div class="pack-detail">Each agent gets a unique Microsoft Entra ID, enabling precise access control to data and services — agents are managed exactly like users.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-shield" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Security integration</div><div class="pack-detail">Integrates with Microsoft Defender, Entra, and Purview. Detect threats, block compromised agents, enforce compliance, and audit all interactions.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-activity" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Lifecycle governance</div><div class="pack-detail">Full lifecycle control — deploy, update, suspend, or decommission agents with approval workflows and full change tracking.</div></div>
+        </div>
+        <div class="note-box info-box"><i class="ti ti-info-circle"></i><div>Agent 365 reached general availability on <strong>1 May 2026</strong>. Buying standalone ($15/user/month) vs inside M365 E7 ($99 bundle) is worth modelling — see the M365 E7 tab for full bundle value analysis.</div></div>
+      </div>
+
+      <!-- ══ M365 E7 ══ -->
+      <div id="page-e7" class="page">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-info)"><i class="ti ti-stack" style="color:var(--text-info)"></i></div>
+          <div>
+            <div class="product-title">Microsoft 365 E7 — Frontier Suite</div>
+            <div class="product-subtitle">Microsoft's all-in-one enterprise AI bundle — M365 E5 + Copilot + Agent 365 + Entra Suite in a single SKU</div>
+          </div>
+        </div>
+
+        <div class="price-hero">
+          <div>
+            <div class="price-label">Annual term · per user · available from 1 May 2026</div>
+            <div class="price-big">$99</div>
+            <div class="price-meta">per user / month &nbsp;·&nbsp; EA &nbsp;·&nbsp; EAS &nbsp;·&nbsp; MCA-E &nbsp;·&nbsp; CSP</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span class="badge bs" style="font-size:12px;padding:5px 10px"><i class="ti ti-tag" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>~15% saving vs buying separately (~$117/user/month)</span>
+            <span class="badge bw" style="font-size:12px;padding:5px 10px"><i class="ti ti-percentage" style="font-size:13px;vertical-align:-2px;margin-right:4px"></i>10% off 10+ seats · 15% off 100+ seats (promo until Dec 2026)</span>
+          </div>
+        </div>
+
+        <div class="section-label">What's bundled in E7</div>
+        <div class="bundle-grid">
+          <div class="bundle-item" style="border-left-color:#185FA5">
+            <div class="bundle-label">Layer 1</div>
+            <div class="bundle-name"><i class="ti ti-shield-check" style="color:#185FA5;font-size:14px"></i>Microsoft 365 E5</div>
+            <ul class="bundle-features">
+              <li><i class="ti ti-check"></i>All M365 E3 apps &amp; services</li>
+              <li><i class="ti ti-check"></i>Advanced compliance (Purview)</li>
+              <li><i class="ti ti-check"></i>Microsoft Defender (full suite)</li>
+              <li><i class="ti ti-check"></i>Microsoft Intune (advanced)</li>
+              <li><i class="ti ti-check"></i>Power BI Pro included</li>
+              <li><i class="ti ti-check"></i>Phone System + audio conferencing</li>
+            </ul>
+          </div>
+          <div class="bundle-item" style="border-left-color:#0F6E56">
+            <div class="bundle-label">Layer 2</div>
+            <div class="bundle-name"><i class="ti ti-robot" style="color:#0F6E56;font-size:14px"></i>M365 Copilot Wave 3</div>
+            <ul class="bundle-features">
+              <li><i class="ti ti-check"></i>Copilot in Word, Excel, PowerPoint</li>
+              <li><i class="ti ti-check"></i>Copilot in Outlook &amp; Teams</li>
+              <li><i class="ti ti-check"></i>Graph grounding + BizChat</li>
+              <li><i class="ti ti-check"></i>Artifact creation &amp; editing</li>
+              <li><i class="ti ti-check"></i>Multi-model: GPT + Claude</li>
+              <li><i class="ti ti-check"></i>Role Copilots (Sales/Service/Finance)</li>
+              <li><i class="ti ti-check"></i>Copilot Studio (internal agents)</li>
+            </ul>
+          </div>
+          <div class="bundle-item" style="border-left-color:#993C1D">
+            <div class="bundle-label">Layer 3 · new</div>
+            <div class="bundle-name"><i class="ti ti-cpu" style="color:#993C1D;font-size:14px"></i>Agent 365</div>
+            <ul class="bundle-features">
+              <li><i class="ti ti-check"></i>Unified agent control plane</li>
+              <li><i class="ti ti-check"></i>Agent identity &amp; permissions</li>
+              <li><i class="ti ti-check"></i>Activity monitoring &amp; audit</li>
+              <li><i class="ti ti-check"></i>Threat detection</li>
+              <li><i class="ti ti-check"></i>Lifecycle governance</li>
+              <li><i class="ti ti-check"></i>Quarantine shadow agents</li>
+            </ul>
+          </div>
+          <div class="bundle-item" style="border-left-color:#534AB7">
+            <div class="bundle-label">Layer 4</div>
+            <div class="bundle-name"><i class="ti ti-key" style="color:#534AB7;font-size:14px"></i>Entra Suite</div>
+            <ul class="bundle-features">
+              <li><i class="ti ti-check"></i>Entra ID P2 (Conditional Access)</li>
+              <li><i class="ti ti-check"></i>Entra ID Governance</li>
+              <li><i class="ti ti-check"></i>Entra Internet Access</li>
+              <li><i class="ti ti-check"></i>Entra Private Access (Zero Trust)</li>
+              <li><i class="ti ti-check"></i>Entra Verified ID</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-label">Value comparison</div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Component</th><th>Standalone price</th><th>In E7</th></tr></thead>
+            <tbody>
+              <tr><td>Microsoft 365 E5</td><td>~$57/user/month</td><td style="color:var(--text-success);font-weight:600">✓ Included</td></tr>
+              <tr><td>M365 Copilot Enterprise</td><td>~$30/user/month</td><td style="color:var(--text-success);font-weight:600">✓ Included</td></tr>
+              <tr><td>Agent 365 Premium</td><td>~$15/user/month</td><td style="color:var(--text-success);font-weight:600">✓ Included</td></tr>
+              <tr><td>Entra Suite</td><td>~$12/user/month</td><td style="color:var(--text-success);font-weight:600">✓ Included</td></tr>
+              <tr><td><strong>Total standalone</strong></td><td><strong>~$114/user/month</strong></td><td><strong style="color:var(--text-info)">$99/user/month</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="note-box warn-box" style="margin-top:14px"><i class="ti ti-alert-triangle"></i><div>E7 does <strong>not</strong> include Copilot Studio capacity packs. Autonomous agent runs and external user interactions still consume Copilot Credits from a separately purchased pool — see the Copilot Studio tab.</div></div>
+      </div>
+
+      <!-- ══ BUSINESS CENTRAL ══ -->
+      <div id="page-bc" class="page">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-success)"><i class="ti ti-building-store" style="color:var(--text-success)"></i></div>
+          <div>
+            <div class="product-title">Dynamics 365 Business Central Essentials</div>
+            <div class="product-subtitle">Cloud ERP for small and mid-sized businesses — finance, sales, purchasing, inventory, and projects (no manufacturing)</div>
+          </div>
+        </div>
+
+        <div class="section-label">License tiers</div>
+        <div class="sku-grid">
+          <div class="sku-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Team Member</span><span class="badge bs">Light users</span></div>
+            <div class="sku-price">$8</div><div class="sku-price-unit">per user / month (annual)</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Read access to all BC data</li>
+              <li><i class="ti ti-check ok"></i>Approve workflow requests</li>
+              <li><i class="ti ti-check ok"></i>Enter timesheets &amp; expenses</li>
+              <li><i class="ti ti-x no"></i>No full transaction entry</li>
+              <li><i class="ti ti-x no"></i>No GL posting</li>
+            </ul>
+          </div>
+          <div class="sku-card featured">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Essentials</span><span class="badge bi">Most common</span></div>
+            <div class="sku-price">$80</div><div class="sku-price-unit">per user / month (annual)</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Financial management (full GL)</li>
+              <li><i class="ti ti-check ok"></i>Accounts payable &amp; receivable</li>
+              <li><i class="ti ti-check ok"></i>Bank reconciliation &amp; cash flow</li>
+              <li><i class="ti ti-check ok"></i>Fixed assets</li>
+              <li><i class="ti ti-check ok"></i>Sales &amp; basic CRM</li>
+              <li><i class="ti ti-check ok"></i>Purchasing &amp; supply chain</li>
+              <li><i class="ti ti-check ok"></i>Inventory &amp; warehousing</li>
+              <li><i class="ti ti-check ok"></i>Project management</li>
+              <li><i class="ti ti-check ok"></i>Microsoft Copilot included</li>
+              <li><i class="ti ti-x no"></i>No manufacturing</li>
+              <li><i class="ti ti-x no"></i>No service management</li>
+            </ul>
+          </div>
+          <div class="sku-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Premium</span><span class="badge bd">Full ERP</span></div>
+            <div class="sku-price">$110</div><div class="sku-price-unit">per user / month (annual)</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Everything in Essentials</li>
+              <li><i class="ti ti-check ok"></i>Manufacturing (full BOM &amp; MRP)</li>
+              <li><i class="ti ti-check ok"></i>Service management</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-label">Entitlements &amp; add-ons</div>
+        <div class="pack-grid">
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-user-check" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>External accountant</div><div class="pack-detail">3 complimentary external accountant licenses per subscription — for tax advisors, audit firms, and external consultants. No cost.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-robot" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Copilot included</div><div class="pack-detail">AI-assisted data entry, bank reconciliation suggestions, narrative reporting, and natural language queries — included at no extra cost.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-database" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Dataverse included</div><div class="pack-detail">Each Essentials/Premium user contributes database and file storage to the tenant pool, enabling Power Platform integration.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-currency-dollar" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Attach to D365 Sales</div><div class="pack-detail">Business Central Premium users qualify as a base license — Dynamics 365 Sales Enterprise can be added for just $20/user/month instead of $105.</div></div>
+        </div>
+        <div class="note-box info-box"><i class="ti ti-info-circle"></i><div>Price increased from $70 → $80/user/month in November 2025. Choose <strong>Essentials</strong> if you don't need manufacturing or service management — <strong>Premium</strong> is $30 more per user per month for those two modules only.</div></div>
+      </div>
+
+      <!-- ══ CUSTOMER ENGAGEMENT ══ -->
+      <div id="page-ce" class="page">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-warning)"><i class="ti ti-users-group" style="color:var(--text-warning)"></i></div>
+          <div>
+            <div class="product-title">Dynamics 365 Customer Engagement</div>
+            <div class="product-subtitle">CRM apps covering Sales, Customer Service, Field Service, and Project Operations — sold individually with attach pricing for multi-app users</div>
+          </div>
+        </div>
+
+        <div class="note-box danger-box"><i class="ti ti-alert-triangle"></i><div><strong>The "Customer Engagement Plan" bundle SKU was retired in 2019.</strong> Microsoft now sells each CRM app individually. Users who hold a qualifying base license pay the lower <strong>attach price</strong> ($20/user/month) for each additional app.</div></div>
+
+        <div class="section-label">Individual app pricing</div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>App</th><th>Standalone price</th><th>Attach price</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Sales Professional</td><td>$65/user/month</td><td>$20/user/month</td><td style="color:var(--text-tertiary)">Core CRM</td></tr>
+              <tr><td>Sales Enterprise</td><td>$105/user/month</td><td>$20/user/month</td><td style="color:var(--text-tertiary)">AI scoring + pipeline intel</td></tr>
+              <tr><td>Sales Premium</td><td>$150/user/month</td><td>$20/user/month</td><td style="color:var(--text-tertiary)">Full Sales Insights suite</td></tr>
+              <tr><td>Customer Service Professional</td><td>$50/user/month</td><td>$20/user/month</td><td style="color:var(--text-tertiary)">Core case management</td></tr>
+              <tr><td>Customer Service Enterprise</td><td>$95/user/month</td><td>$20/user/month</td><td style="color:var(--text-tertiary)">Omnichannel + AI</td></tr>
+              <tr><td>Field Service</td><td>$105/user/month</td><td>$20/user/month</td><td style="color:var(--text-tertiary)">Scheduling + mobile</td></tr>
+              <tr><td>Project Operations</td><td>$120/user/month</td><td>$30/user/month</td><td style="color:var(--text-tertiary)">Premium attach rate</td></tr>
+              <tr><td>Team Member</td><td>$8/user/month</td><td>—</td><td style="color:var(--text-tertiary)">Read + approve only</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section-label">How attach pricing works</div>
+        <div class="pack-grid">
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-link" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Qualifying base licenses</div><div class="pack-detail">A user holding <strong>Sales Enterprise, Customer Service Enterprise, Field Service, or Business Central Premium</strong> qualifies. Additional D365 apps cost $20/month instead of standalone.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-calculator" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Example saving</div><div class="pack-detail">Sales Enterprise ($105) + Customer Service Enterprise ($95) standalone = $200/month. With attach: $105 base + $20 = <strong>$125/user/month</strong> — saving $75 per user.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-robot" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Copilot included</div><div class="pack-detail">All CE apps include embedded Copilot — email drafts, meeting summaries, lead scoring, and natural language pipeline queries. No extra charge.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-user" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Licence per user</div><div class="pack-detail">Each user only needs the apps relevant to their role. A salesperson doesn't need Field Service — licence precisely to avoid overspend.</div></div>
+        </div>
+      </div>
+
+      <!-- ══ SALES ENTERPRISE ══ -->
+      <div id="page-sales" class="page">
+        <div class="product-header">
+          <div class="product-icon" style="background:var(--bg-success)"><i class="ti ti-currency-dollar" style="color:var(--text-success)"></i></div>
+          <div>
+            <div class="product-title">Dynamics 365 Sales Enterprise</div>
+            <div class="product-subtitle">Full-featured CRM for complex sales processes — AI-driven insights, pipeline intelligence, and advanced automation</div>
+          </div>
+        </div>
+
+        <div class="note-box ok-box"><i class="ti ti-tag"></i><div><strong>Attach pricing available:</strong> Users holding a qualifying D365 base license (e.g. Business Central Premium) can add Sales Enterprise for <strong>$20/user/month</strong> instead of $105 standalone.</div></div>
+
+        <div class="section-label">Sales edition comparison</div>
+        <div class="sku-grid">
+          <div class="sku-card">
+            <div class="sku-name" style="margin-bottom:6px">Sales Professional</div>
+            <div class="sku-price">$65</div><div class="sku-price-unit">per user / month</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Lead, contact, account &amp; opportunity management</li>
+              <li><i class="ti ti-check ok"></i>Basic dashboards &amp; reporting</li>
+              <li><i class="ti ti-check ok"></i>Email integration</li>
+              <li><i class="ti ti-x no"></i>No predictive scoring</li>
+              <li><i class="ti ti-x no"></i>No pipeline intelligence</li>
+              <li><i class="ti ti-x no"></i>No custom apps</li>
+            </ul>
+          </div>
+          <div class="sku-card featured">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px"><span class="sku-name">Sales Enterprise</span><span class="badge bi">Recommended</span></div>
+            <div class="sku-price">$105</div><div class="sku-price-unit">per user / month (or $20 attach)</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Everything in Professional</li>
+              <li><i class="ti ti-check ok"></i>Sales accelerator</li>
+              <li><i class="ti ti-check ok"></i>Predictive lead &amp; opportunity scoring</li>
+              <li><i class="ti ti-check ok"></i>Pipeline intelligence &amp; forecasting</li>
+              <li><i class="ti ti-check ok"></i>Relationship analytics</li>
+              <li><i class="ti ti-check ok"></i>Custom apps &amp; workflow automation</li>
+              <li><i class="ti ti-check ok"></i>Premium Copilot assistant cards</li>
+            </ul>
+          </div>
+          <div class="sku-card">
+            <div class="sku-name" style="margin-bottom:6px">Sales Premium</div>
+            <div class="sku-price">$150</div><div class="sku-price-unit">per user / month</div>
+            <ul class="feat">
+              <li><i class="ti ti-check ok"></i>Everything in Enterprise</li>
+              <li><i class="ti ti-check ok"></i>Full Sales Insights suite</li>
+              <li><i class="ti ti-check ok"></i>Conversation intelligence</li>
+              <li><i class="ti ti-check ok"></i>Advanced AI analytics</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-label">Copilot capabilities in Sales Enterprise</div>
+        <div class="pack-grid">
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-mail" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Email assistance</div><div class="pack-detail">AI-drafted replies and follow-ups based on CRM context — deal stage, account history, and tone considered automatically.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-clipboard-list" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Meeting prep</div><div class="pack-detail">Pre-meeting briefs pulling account history, open opportunities, recent emails, and news — generated before each call.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-chart-line" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Lead &amp; opp scoring</div><div class="pack-detail">Predictive AI ranks leads and opportunities by conversion likelihood — helps reps focus effort on the deals most likely to close.</div></div>
+          <div class="pack-card"><div class="pack-name"><i class="ti ti-message" style="font-size:13px;vertical-align:-2px;margin-right:3px"></i>Natural language queries</div><div class="pack-detail">Ask "which deals are at risk this quarter?" directly in the CRM — AI generates answers from your live pipeline data.</div></div>
+        </div>
+        <div class="note-box info-box"><i class="ti ti-info-circle"></i><div>The key upgrade question is <strong>Enterprise → Premium</strong>: Premium adds the full Sales Insights suite and conversation intelligence (call recording + AI analysis). Worth it if your sales team has high call volume or needs deep coaching analytics.</div></div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  function show(id, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('theme-icon').className = isDark ? 'ti ti-moon' : 'ti ti-sun';
+    document.getElementById('theme-label').textContent = isDark ? 'Dark mode' : 'Light mode';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }
+
+  (function initTheme() {
+    const saved = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const theme = saved || (prefersDark ? 'dark' : 'light');
+    document.documentElement.setAttribute('data-theme', theme);
+    if (theme === 'dark') {
+      document.getElementById('theme-icon').className = 'ti ti-sun';
+      document.getElementById('theme-label').textContent = 'Light mode';
+    }
+  })();
+</script>
+</body>
+</html>
