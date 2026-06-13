@@ -1370,89 +1370,22 @@
       return null;
     }
 
-    function rmParseCSV(text) {
-      const rows = [];
-      let row = [], cur = '', inQ = false;
-      for (let i = 0; i < text.length; i++) {
-        const c = text[i];
-        if (inQ) {
-          if (c === '"') {
-            if (text[i+1] === '"') { cur += '"'; i++; }
-            else inQ = false;
-          } else { cur += c; }
-        } else {
-          if (c === '"') { inQ = true; }
-          else if (c === ',') { row.push(cur.trim()); cur = ''; }
-          else if (c === '\n' || (c === '\r' && text[i+1] === '\n')) {
-            if (c === '\r') i++;
-            row.push(cur.trim()); cur = '';
-            if (row.some(v => v)) rows.push(row);
-            row = [];
-          } else { cur += c; }
-        }
-      }
-      if (cur || row.length) { row.push(cur.trim()); if (row.some(v => v)) rows.push(row); }
-      if (rows.length < 2) return [];
-      const headers = rows[0];
-      return rows.slice(1).map(vals => {
-        const obj = {};
-        headers.forEach((h, j) => { obj[h] = vals[j] || ''; });
-        return obj;
-      });
-    }
-
     async function rmRefresh() {
       const btn = document.getElementById('rm-refresh-btn');
       if (btn) { btn.disabled=true; btn.classList.add('spinning'); }
       rmSetTimestamp('Fetching live data…');
       try {
-        const API_URL = 'https://www.microsoft.com/releasecommunications/api/v2/m365?responseFormat=csv';
-        const resp = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(API_URL));
-        if (!resp.ok) throw new Error('Proxy HTTP ' + resp.status);
-        const csv = await resp.text();
-        if (!csv || csv.length < 100) throw new Error('Empty response');
-        const rows = rmParseCSV(csv);
-        if (!rows.length) throw new Error('CSV parse returned no rows');
-        const targetProds = {
-          'Microsoft Copilot (Microsoft 365)': 'M365 Copilot',
-          'Microsoft Copilot Studio': 'Copilot Studio',
-          'Power Automate': 'Power Automate',
-          'Power Apps': 'Power Apps'
-        };
-        const validStatuses = new Set(['Rolling out', 'In development']);
-        const validPlatforms = new Set(['Desktop', 'Web']);
-        const mapped = [];
-        rows.forEach(row => {
-          const prodTags = (row['Tags - Product'] || '').split(',').map(s => s.trim()).filter(Boolean);
-          const platTags = (row['Tags - Platform'] || '').split(',').map(s => s.trim()).filter(Boolean);
-          const status = (row['Status'] || '').trim();
-          const matchProd = prodTags.find(pt => targetProds[pt]);
-          if (!matchProd) return;
-          if (!validStatuses.has(status)) return;
-          if (!platTags.some(pt => validPlatforms.has(pt))) return;
-          const rawDate = row['Release'] || row['General availability'] || '';
-          const date = rmParseApiDate(rawDate);
-          if (!date) return;
-          const title = (row['Description'] || 'Untitled').trim();
-          const desc = (row['Details'] || title).trim();
-          const featId = row['Feature ID'] || '';
-          mapped.push({
-            p: targetProds[matchProd],
-            title,
-            sum: desc.length > 110 ? desc.substring(0, 107) + '…' : desc,
-            desc, status,
-            plat: platTags.filter(pt => validPlatforms.has(pt)).join(', '),
-            date,
-            url: row['More Info'] || `https://www.microsoft.com/en-gb/microsoft-365/roadmap?filters=&searchterms=${featId}`
-          });
-        });
-        if (mapped.length > 0) {
-          rmLiveItems = mapped;
-          renderRoadmap(mapped);
-          rmSetTimestamp('Live data · ' + new Date().toLocaleTimeString('en-GB', {hour:'2-digit', minute:'2-digit'}) + ' · ' + mapped.length + ' items');
-        } else {
-          throw new Error('No matching items in response');
-        }
+        const resp = await fetch('/roadmap-data.json?t=' + Date.now());
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+        const items = data.items || [];
+        if (!items.length) throw new Error('No items in data file');
+        rmLiveItems = items;
+        renderRoadmap(items);
+        const ts = data.updated
+          ? new Date(data.updated).toLocaleDateString('en-GB', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})
+          : '?';
+        rmSetTimestamp('Live data · updated ' + ts + ' · ' + items.length + ' items');
       } catch (err) {
         renderRoadmap();
         rmSetTimestamp('Live fetch unavailable · showing embedded data');
