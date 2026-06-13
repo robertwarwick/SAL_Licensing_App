@@ -1375,7 +1375,8 @@
       if (btn) { btn.disabled=true; btn.classList.add('spinning'); }
       rmSetTimestamp('Fetching live data…');
       try {
-        const resp = await fetch('https://www.microsoft.com/releasecommunications/api/v2/m365?responseFormat=json', {mode:'cors'});
+        const API_URL = 'https://www.microsoft.com/releasecommunications/api/v2/m365?responseFormat=json';
+        const resp = await fetch('https://corsproxy.io/?url=' + encodeURIComponent(API_URL), {mode:'cors'});
         if (!resp.ok) throw new Error('HTTP '+resp.status);
         const data = await resp.json();
         const targetProds = {'Microsoft Copilot (Microsoft 365)':'M365 Copilot','Microsoft Copilot Studio':'Copilot Studio','Power Automate':'Power Automate','Power Apps':'Power Apps'};
