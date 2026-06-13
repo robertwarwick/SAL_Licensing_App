@@ -139,8 +139,8 @@
     background: var(--nav-bg);
     border-right: 1px solid var(--border);
     padding: 16px 0;
-    position: sticky; top: 56px;
-    height: calc(100vh - 56px);
+    position: sticky; top: 100px;
+    height: calc(100vh - 100px);
     overflow-y: auto;
   }
   .nav-group { margin-bottom: 4px; }
@@ -273,6 +273,79 @@
 
   /* ── DIVIDER ── */
   .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+  /* ── INFOGRAPHIC VARIABLE ALIASES ── */
+  :root {
+    --color-background-primary:  var(--bg-raised);
+    --color-background-secondary: var(--bg-subtle);
+    --color-background-info:     var(--bg-info);
+    --color-background-success:  var(--bg-success);
+    --color-background-warning:  var(--bg-warning);
+    --color-text-primary:        var(--text-primary);
+    --color-text-secondary:      var(--text-secondary);
+    --color-text-info:           var(--text-info);
+    --color-text-success:        var(--text-success);
+    --color-text-warning:        var(--text-warning);
+    --color-border-secondary:    var(--border);
+    --color-border-tertiary:     var(--border);
+    --color-border-info:         var(--border-info);
+    --color-border-success:      var(--border-success);
+    --color-border-warning:      var(--border-warning);
+    --border-radius-md:          6px;
+    --border-radius-lg:          10px;
+    --font-sans:                 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* ── TOP-LEVEL TABS ── */
+  .top-tabs {
+    background: var(--header-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    position: sticky;
+    top: 56px;
+    z-index: 99;
+    box-shadow: var(--shadow);
+  }
+  .top-tab {
+    display: flex; align-items: center; gap: 7px;
+    padding: 6px 14px; border-radius: 8px;
+    font-size: 13px; font-weight: 500;
+    background: none; border: none; cursor: pointer;
+    color: var(--text-secondary);
+    transition: background .12s, color .12s;
+  }
+  .top-tab:hover { background: var(--bg-subtle); color: var(--text-primary); }
+  .top-tab.active {
+    background: var(--nav-active-bg);
+    color: var(--nav-active-text);
+  }
+  .top-tab i { font-size: 16px; }
+
+  /* ── PANEL VISIBILITY ── */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── USAGE PANEL ── */
+  .usage-main { max-width: 960px; margin: 0 auto; padding: 28px 32px; }
+
+  /* ── USAGE INNER TABS ── */
+  #panel-usage .tab-btn {
+    transition: all 150ms ease;
+    color: var(--text-secondary);
+  }
+  #panel-usage .tab-btn.active {
+    background: var(--bg-info) !important;
+    color: var(--text-info);
+    border-color: var(--border-info) !important;
+  }
+  #panel-usage .tab-btn:hover {
+    border-color: var(--border-med) !important;
+    color: var(--text-primary);
+  }
 </style>
 </head>
 <body>
@@ -294,6 +367,14 @@
     </button>
   </header>
 
+  <!-- TOP-LEVEL TABS -->
+  <nav class="top-tabs" aria-label="Section navigation">
+    <button class="top-tab active" onclick="switchTopTab('panel-licensing', this)"><i class="ti ti-license"></i>Microsoft Licensing</button>
+    <button class="top-tab" onclick="switchTopTab('panel-usage', this)"><i class="ti ti-chart-bar"></i>Copilot Usage Statistics</button>
+  </nav>
+
+  <!-- PANEL: LICENSING -->
+  <div id="panel-licensing" class="panel active">
   <div class="body">
 
     <!-- SIDEBAR -->
@@ -867,9 +948,220 @@
 
     </main>
   </div>
-</div>
+  </div><!-- /panel-licensing -->
+
+  <!-- PANEL: USAGE STATISTICS -->
+  <div id="panel-usage" class="panel">
+    <div class="usage-main">
+
+      <h2 style="font-size: 22px; font-weight: 500; margin: 0 0 0.5rem; text-align: center; color: var(--text-primary);">Microsoft Copilot &amp; Copilot Studio Usage Statistics</h2>
+      <p style="text-align: center; color: var(--text-secondary); margin: 0 0 2rem; font-size: 14px;">All methods for tracking usage across M365 Copilot and Copilot Studio agents</p>
+
+      <div id="usage-tabs" style="display: flex; justify-content: center; gap: 8px; margin-bottom: 2rem; flex-wrap: wrap;">
+        <button onclick="switchUsageTab('usage-overview', this)" class="tab-btn active" style="padding: 8px 16px; background: var(--bg-info); border: 0.5px solid var(--border-info); border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-info);">Overview</button>
+        <button onclick="switchUsageTab('usage-copilot', this)" class="tab-btn" style="padding: 8px 16px; background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">M365 Copilot</button>
+        <button onclick="switchUsageTab('usage-studio', this)" class="tab-btn" style="padding: 8px 16px; background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">Studio Agents</button>
+        <button onclick="switchUsageTab('usage-advanced', this)" class="tab-btn" style="padding: 8px 16px; background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500;">Advanced Telemetry</button>
+      </div>
+
+      <div id="usage-overview" class="tab-content" style="display: block;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 2rem;">
+          <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+              <i class="ti ti-user" style="font-size: 20px; color: var(--text-info);"></i>
+              <h3 style="font-size: 14px; font-weight: 500; margin: 0; color: var(--text-primary);">End Users</h3>
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Personal dashboards, team views, agent owner analytics</p>
+          </div>
+          <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+              <i class="ti ti-shield-check" style="font-size: 20px; color: var(--text-success);"></i>
+              <h3 style="font-size: 14px; font-weight: 500; margin: 0; color: var(--text-primary);">Administrators</h3>
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Organization-wide reports, agent inventory, governance</p>
+          </div>
+          <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1.25rem;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+              <i class="ti ti-database" style="font-size: 20px; color: var(--text-warning);"></i>
+              <h3 style="font-size: 14px; font-weight: 500; margin: 0; color: var(--text-primary);">Advanced</h3>
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Custom telemetry, KQL queries, data warehousing</p>
+          </div>
+        </div>
+
+        <h3 style="font-size: 16px; font-weight: 500; margin: 2rem 0 1rem; color: var(--text-primary);">Key Products &amp; Methods (60+ statistics available)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+          <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1rem; border-left: 3px solid var(--border-info);"><p style="font-size: 13px; font-weight: 500; margin: 0 0 8px; color: var(--text-primary);">Copilot Dashboard</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Real-time usage, adoption, impact metrics</p></div>
+          <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1rem; border-left: 3px solid var(--border-info);"><p style="font-size: 13px; font-weight: 500; margin: 0 0 8px; color: var(--text-primary);">Agent Analytics Tab</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Per-agent engagement, resolution, topics</p></div>
+          <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1rem; border-left: 3px solid var(--border-info);"><p style="font-size: 13px; font-weight: 500; margin: 0 0 8px; color: var(--text-primary);">M365 Admin Reports</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Organization adoption, readiness, agents</p></div>
+          <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1rem; border-left: 3px solid var(--border-success);"><p style="font-size: 13px; font-weight: 500; margin: 0 0 8px; color: var(--text-primary);">Viva Insights</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Advanced reporting, custom analytics, Power BI</p></div>
+          <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1rem; border-left: 3px solid var(--border-success);"><p style="font-size: 13px; font-weight: 500; margin: 0 0 8px; color: var(--text-primary);">Agent Inventory Kit</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Tenant-wide agent visibility, growth tracking</p></div>
+          <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1rem; border-left: 3px solid var(--border-warning);"><p style="font-size: 13px; font-weight: 500; margin: 0 0 8px; color: var(--text-primary);">Application Insights</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Real-time telemetry, KQL, custom events</p></div>
+        </div>
+      </div>
+
+      <div id="usage-copilot" class="tab-content" style="display: none;">
+        <h3 style="font-size: 16px; font-weight: 500; margin: 0 0 1.5rem; color: var(--text-primary);">M365 Copilot Usage Statistics</h3>
+        <div style="margin-bottom: 2rem;">
+          <h4 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 1rem; display: flex; align-items: center; gap: 8px;"><i class="ti ti-user" style="color: var(--text-info);"></i>User-Level Access</h4>
+          <div style="display: grid; gap: 12px;">
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Copilot Dashboard</p><span style="background: var(--bg-info); color: var(--text-info); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Personal</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Personal usage metrics, feature breakdown by app, trend comparisons, manager view for teams</p>
+              <div style="display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-lock" style="font-size: 13px; vertical-align: -1px;"></i> Copilot license required</span><span><i class="ti ti-refresh" style="font-size: 13px; vertical-align: -1px;"></i> Real-time</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">App-Integrated Metrics</p><span style="background: var(--bg-info); color: var(--text-info); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Direct</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Word, Excel, PowerPoint, Outlook, Teams—usage counts, frequency, per-feature tracking</p>
+              <div style="display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-chart-line" style="font-size: 13px; vertical-align: -1px;"></i> Within each app</span><span><i class="ti ti-calendar" style="font-size: 13px; vertical-align: -1px;"></i> 30-day window</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 1rem; display: flex; align-items: center; gap: 8px;"><i class="ti ti-shield-check" style="color: var(--text-success);"></i>Administrator Access</h4>
+          <div style="display: grid; gap: 12px;">
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">M365 Admin Center</p><span style="background: var(--bg-success); color: var(--text-success); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Primary</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Readiness report, usage report (active users, actions, impact), agent usage, licensing breakdown</p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-user-check" style="font-size: 13px; vertical-align: -1px;"></i> Global/License/Insights Admin</span><span><i class="ti ti-refresh" style="font-size: 13px; vertical-align: -1px;"></i> Daily refresh</span><span><i class="ti ti-alert-circle" style="font-size: 13px; vertical-align: -1px;"></i> Email metrics underestimated (pre-Feb 2026)</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Viva Insights</p><span style="background: var(--bg-success); color: var(--text-success); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Advanced</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Adoption, engagement, impact, custom filtering by category &amp; usage type, Power BI integration</p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-chart-dots" style="font-size: 13px; vertical-align: -1px;"></i> Insights Analyst role</span><span><i class="ti ti-calendar" style="font-size: 13px; vertical-align: -1px;"></i> Custom periods</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Power Platform Admin Center</p><span style="background: var(--bg-info); color: var(--text-info); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Governance</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Content moderation, blocked queries, tenant security, alerts &amp; recommendations</p>
+              <div style="display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-shield" style="font-size: 13px; vertical-align: -1px;"></i> Power Platform admin</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Purview Audit Logs</p><span style="background: var(--bg-warning); color: var(--text-warning); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Compliance</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Audit trail, feature usage events, data access patterns, eDiscovery support</p>
+              <div style="display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-lock" style="font-size: 13px; vertical-align: -1px;"></i> Compliance/Global Admin</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="usage-studio" class="tab-content" style="display: none;">
+        <h3 style="font-size: 16px; font-weight: 500; margin: 0 0 1.5rem; color: var(--text-primary);">Copilot Studio Agent Usage Statistics</h3>
+        <div style="margin-bottom: 2rem;">
+          <h4 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 1rem; display: flex; align-items: center; gap: 8px;"><i class="ti ti-user" style="color: var(--text-info);"></i>Agent Owners &amp; Makers</h4>
+          <div style="display: grid; gap: 12px;">
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Analytics Tab (Built-in)</p><span style="background: var(--bg-info); color: var(--text-info); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">⭐ Primary</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">AI-generated summary, engagement rate, resolution rate, deflection rate, topic performance, sentiment, custom metrics</p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-clock" style="font-size: 13px; vertical-align: -1px;"></i> 180-day analytics, 28-day transcripts</span><span><i class="ti ti-alert-circle" style="font-size: 13px; vertical-align: -1px;"></i> Production data only</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Conversation Transcripts</p><span style="background: var(--bg-info); color: var(--text-info); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">QA</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Full conversations, topic triggers, escalations, timestamps, user identifiers, sentiment analysis</p>
+              <div style="display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-calendar" style="font-size: 13px; vertical-align: -1px;"></i> 28-day window</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 1rem; display: flex; align-items: center; gap: 8px;"><i class="ti ti-shield-check" style="color: var(--text-success);"></i>Power Platform Administrators</h4>
+          <div style="display: grid; gap: 12px;">
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Agent Inventory Kit</p><span style="background: var(--bg-success); color: var(--text-success); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">⭐ Tenant-wide</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">All agents across all environments, agent count, AI feature usage, actions, prompts, knowledge sources, creation timeline, top environments</p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-refresh" style="font-size: 13px; vertical-align: -1px;"></i> Daily (3 AM), manual sync available</span><span><i class="ti ti-database" style="font-size: 13px; vertical-align: -1px;"></i> Dataverse-based</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">M365 Admin Center Agents Report</p><span style="background: var(--bg-info); color: var(--text-info); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Org-wide</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Internal agents, Teams Toolkit agents, agent builder agents, active users, licensing status, internal vs. external</p>
+              <div style="display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-user-check" style="font-size: 13px; vertical-align: -1px;"></i> Global/Report Reader</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Viva Insights Agents Report</p><span style="background: var(--bg-success); color: var(--text-success); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Advanced</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Adoption, engagement, resolution, topic performance, autonomous metrics, conversation insights, custom analysis</p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-chart-dots" style="font-size: 13px; vertical-align: -1px;"></i> Insights Analyst, Power BI</span><span><i class="ti ti-alert-circle" style="font-size: 13px; vertical-align: -1px;"></i> License + published agent required</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Agent Insights Hub</p><span style="background: var(--bg-warning); color: var(--text-warning); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Real-time</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Performance dashboard, conversation metrics, topic analytics, tool execution, error tracking, credit consumption, sync status</p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-database" style="font-size: 13px; vertical-align: -1px;"></i> Application Insights + Dataverse</span><span><i class="ti ti-alert-circle" style="font-size: 13px; vertical-align: -1px;"></i> Setup required</span></div>
+            </div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;">
+              <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;"><p style="font-weight: 500; font-size: 14px; margin: 0; color: var(--text-primary);">Dataverse Custom Queries</p><span style="background: var(--bg-info); color: var(--text-info); font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 500;">Flexible</span></div>
+              <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px;">Direct table queries, full conversation data, custom retention, Power BI integration, Azure Data Lake export</p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--text-secondary);"><span><i class="ti ti-code" style="font-size: 13px; vertical-align: -1px;"></i> Developer/Analyst</span><span><i class="ti ti-calendar" style="font-size: 13px; vertical-align: -1px;"></i> 30+ days configurable</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="usage-advanced" class="tab-content" style="display: none;">
+        <h3 style="font-size: 16px; font-weight: 500; margin: 0 0 1.5rem; color: var(--text-primary);">Advanced Telemetry &amp; Custom Analytics</h3>
+        <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem;">
+          <h4 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 12px;">Azure Application Insights ⭐ Deep Monitoring</h4>
+          <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 12px;">Real-time telemetry, KQL queries, custom events, performance tracking, error detection</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+            <div style="background: var(--bg-raised); border-radius: 6px; padding: 10px; border: 0.5px solid var(--border);"><p style="font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary);">Captures</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Messages, topics, AI performance, custom dimensions</p></div>
+            <div style="background: var(--bg-raised); border-radius: 6px; padding: 10px; border: 0.5px solid var(--border);"><p style="font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary);">Queries</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">KQL (Kusto Query Language) for advanced analysis</p></div>
+            <div style="background: var(--bg-raised); border-radius: 6px; padding: 10px; border: 0.5px solid var(--border);"><p style="font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary);">Retention</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Configurable beyond 30 days</p></div>
+            <div style="background: var(--bg-raised); border-radius: 6px; padding: 10px; border: 0.5px solid var(--border);"><p style="font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary);">Integration</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Power BI, Azure Monitor, Sentinel</p></div>
+          </div>
+        </div>
+        <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1.25rem; margin-bottom: 1.5rem;">
+          <h4 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 12px;">Dataverse Direct Access</h4>
+          <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 12px;">Raw conversation data, no 30-day limit, custom queries, long-term trending</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+            <div style="background: var(--bg-raised); border-radius: 6px; padding: 10px; border: 0.5px solid var(--border);"><p style="font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary);">Tables</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">bot, botcomponent, transcript, transcript detail</p></div>
+            <div style="background: var(--bg-raised); border-radius: 6px; padding: 10px; border: 0.5px solid var(--border);"><p style="font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary);">Query Methods</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">OData, API, Power Query</p></div>
+            <div style="background: var(--bg-raised); border-radius: 6px; padding: 10px; border: 0.5px solid var(--border);"><p style="font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary);">Visualization</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Power BI dashboards</p></div>
+            <div style="background: var(--bg-raised); border-radius: 6px; padding: 10px; border: 0.5px solid var(--border);"><p style="font-size: 12px; font-weight: 500; margin: 0 0 6px; color: var(--text-primary);">Archive</p><p style="font-size: 12px; color: var(--text-secondary); margin: 0;">Azure Data Lake for long-term storage</p></div>
+          </div>
+        </div>
+        <div>
+          <h4 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 1rem;">Other Advanced Methods</h4>
+          <div style="display: grid; gap: 12px;">
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;"><p style="font-weight: 500; font-size: 14px; margin: 0 0 8px; color: var(--text-primary);">Power BI Connected Analytics</p><p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Custom dashboards, session trends, topic heatmaps, engagement by channel, resolution funnels, custom visualizations</p></div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;"><p style="font-weight: 500; font-size: 14px; margin: 0 0 8px; color: var(--text-primary);">PowerShell &amp; REST APIs</p><p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Programmatic access, automation, integration with other systems, Get-AdminPowerAppAgent cmdlets</p></div>
+            <div style="background: var(--bg-raised); border: 0.5px solid var(--border); border-radius: 10px; padding: 1rem 1.25rem;"><p style="font-weight: 500; font-size: 14px; margin: 0 0 8px; color: var(--text-primary);">Microsoft Sentinel</p><p style="font-size: 13px; color: var(--text-secondary); margin: 0;">Security analytics, custom detection rules, anomalous usage patterns, real-time alerting</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1.5rem; margin-top: 2rem;">
+        <h3 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 1rem;">Key Metrics to Track</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+          <div><p style="font-size: 12px; font-weight: 500; color: var(--text-primary); margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.5px;">M365 Copilot</p><ul style="margin: 0; padding-left: 16px; font-size: 13px; color: var(--text-secondary); line-height: 1.6;"><li>Adoption %</li><li>Actions per user</li><li>Feature penetration</li><li>Impact (hours saved)</li><li>Week-over-week growth</li></ul></div>
+          <div><p style="font-size: 12px; font-weight: 500; color: var(--text-primary); margin: 0 0 8px; text-transform: uppercase; letter-spacing: 0.5px;">Studio Agents</p><ul style="margin: 0; padding-left: 16px; font-size: 13px; color: var(--text-secondary); line-height: 1.6;"><li>Engagement rate (80%+ target)</li><li>Resolution rate (70%+ target)</li><li>Deflection rate</li><li>Escalation rate</li><li>Topic coverage</li><li>Cost per interaction</li></ul></div>
+        </div>
+      </div>
+
+      <div style="background: var(--bg-subtle); border-radius: 10px; padding: 1.5rem; margin-top: 1rem;">
+        <h3 style="font-size: 14px; font-weight: 500; color: var(--text-primary); margin: 0 0 1rem;">Quick Start (30 Minutes)</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+          <div style="border-left: 3px solid var(--border-info); padding-left: 12px;"><p style="font-weight: 500; font-size: 13px; color: var(--text-primary); margin: 0 0 6px;">For Admins</p><ol style="margin: 0; padding-left: 16px; font-size: 12px; color: var(--text-secondary); line-height: 1.6;"><li>M365 Admin Center → Reports → Copilot</li><li>View Usage &amp; Agents tabs</li><li>Export for stakeholders</li></ol></div>
+          <div style="border-left: 3px solid var(--border-info); padding-left: 12px;"><p style="font-weight: 500; font-size: 13px; color: var(--text-primary); margin: 0 0 6px;">For Agent Owners</p><ol style="margin: 0; padding-left: 16px; font-size: 12px; color: var(--text-secondary); line-height: 1.6;"><li>Copilot Studio → Agent</li><li>Click Analytics tab</li><li>Review Summary &amp; metrics</li></ol></div>
+          <div style="border-left: 3px solid var(--border-warning); padding-left: 12px;"><p style="font-weight: 500; font-size: 13px; color: var(--text-primary); margin: 0 0 6px;">For Deep Insights</p><ol style="margin: 0; padding-left: 16px; font-size: 12px; color: var(--text-secondary); line-height: 1.6;"><li>Create Application Insights</li><li>Connect to Studio agent</li><li>Query via KQL</li></ol></div>
+        </div>
+      </div>
+
+    </div><!-- /usage-main -->
+  </div><!-- /panel-usage -->
+
+</div><!-- /shell -->
 
 <script>
+  function switchTopTab(panelId, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(panelId).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function switchUsageTab(tabName, btn) {
+    document.querySelectorAll('#panel-usage .tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('#panel-usage .tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabName).style.display = 'block';
+    btn.classList.add('active');
+  }
+
   function show(id, btn) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
