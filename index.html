@@ -1183,17 +1183,55 @@
       .rmt-link { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-info); text-decoration: none; font-weight: 500; }
       .rmt-link:hover { text-decoration: underline; }
       .rm-empty { padding: 60px 40px; text-align: center; color: var(--text-tertiary); font-size: 14px; }
+
+      /* ── TOOLBAR ── */
+      .rm-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 0 32px 20px; }
+      .rm-filters { display: flex; gap: 7px; flex-wrap: wrap; }
+      .rm-filt {
+        display: flex; align-items: center; gap: 6px;
+        padding: 5px 13px; border-radius: 20px;
+        font-size: 12px; font-weight: 600; cursor: pointer;
+        border: 2px solid var(--fc, #888);
+        background: transparent; color: var(--text-secondary);
+        transition: background .15s, color .15s, opacity .15s;
+      }
+      .rm-filt::before { content:''; display:inline-block; width:8px; height:8px; border-radius:2px; background:var(--fc,#888); flex-shrink:0; }
+      .rm-filt.active { background: var(--fc,#888); color:#fff; }
+      .rm-filt:not(.active) { opacity:.45; }
+      .rm-filt:hover { opacity:1; }
+      .rm-actions { display: flex; align-items: center; gap: 10px; }
+      .rm-timestamp { font-size: 11px; color: var(--text-tertiary); white-space: nowrap; }
+      .rm-refresh-btn {
+        display: flex; align-items: center; gap: 6px;
+        padding: 6px 14px; border-radius: 8px;
+        border: 1px solid var(--border-med);
+        background: var(--bg-raised); color: var(--text-secondary);
+        font-size: 13px; font-weight: 500; cursor: pointer;
+        transition: background .15s, color .15s;
+      }
+      .rm-refresh-btn:hover:not(:disabled) { background: var(--bg-subtle); color: var(--text-primary); }
+      .rm-refresh-btn:disabled { opacity:.5; cursor:default; }
+      @keyframes rm-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+      .rm-refresh-btn.spinning i { animation: rm-spin .7s linear infinite; display:inline-block; }
     </style>
 
     <div class="rm-wrap">
       <div class="rm-hdr">
         <h2><i class="ti ti-map-2" style="font-size:20px;vertical-align:-2px;margin-right:6px;"></i>Product Roadmap</h2>
         <p>Features rolling out over the next 3 months &mdash; sourced from the <a href="https://www.microsoft.com/en-gb/microsoft-365/roadmap" target="_blank" rel="noopener">Microsoft 365 Roadmap</a> and <a href="https://learn.microsoft.com/en-us/power-platform/release-plan/2026wave1/" target="_blank" rel="noopener">2026 Release Wave 1</a>. Hover any card for full details.</p>
-        <div class="rm-legend">
-          <div class="rm-legend-item"><div class="rm-legend-dot" style="background:#0078d4"></div>M365 Copilot</div>
-          <div class="rm-legend-item"><div class="rm-legend-dot" style="background:#7719aa"></div>Copilot Studio</div>
-          <div class="rm-legend-item"><div class="rm-legend-dot" style="background:#038387"></div>Power Automate</div>
-          <div class="rm-legend-item"><div class="rm-legend-dot" style="background:#ae3a88"></div>Power Apps</div>
+      </div>
+      <div class="rm-toolbar">
+        <div class="rm-filters">
+          <button class="rm-filt active" style="--fc:#0078d4" onclick="rmToggleFilter('M365 Copilot',this)">M365 Copilot</button>
+          <button class="rm-filt active" style="--fc:#7719aa" onclick="rmToggleFilter('Copilot Studio',this)">Copilot Studio</button>
+          <button class="rm-filt active" style="--fc:#038387" onclick="rmToggleFilter('Power Automate',this)">Power Automate</button>
+          <button class="rm-filt active" style="--fc:#ae3a88" onclick="rmToggleFilter('Power Apps',this)">Power Apps</button>
+        </div>
+        <div class="rm-actions">
+          <span class="rm-timestamp" id="rm-timestamp"></span>
+          <button class="rm-refresh-btn" id="rm-refresh-btn" onclick="rmRefresh()">
+            <i class="ti ti-refresh"></i>Refresh
+          </button>
         </div>
       </div>
       <div class="rm-scroll">
@@ -1255,14 +1293,25 @@
     ];
 
     const RM_MAP = {};
+    let rmActiveFilters = new Set(['M365 Copilot','Copilot Studio','Power Automate','Power Apps']);
+    let rmLiveItems = null; // populated on successful refresh
 
     function rmDate(s) { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); }
     function rmMonthLabel(d) { return d.toLocaleString('en-GB',{month:'long',year:'numeric'}); }
 
-    function renderRoadmap() {
+    function rmSetTimestamp(msg) {
+      const el = document.getElementById('rm-timestamp');
+      if (el) el.textContent = msg || ('Updated ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}));
+    }
+
+    function renderRoadmap(sourceItems) {
+      const items = sourceItems || rmLiveItems || RM_ITEMS;
       const today = new Date(); today.setHours(0,0,0,0);
       const cutoff = new Date(today); cutoff.setMonth(cutoff.getMonth()+3);
-      const visible = RM_ITEMS.filter(i => { const d=rmDate(i.date); return d>=today && d<=cutoff; });
+      const visible = items.filter(i => {
+        const d = rmDate(i.date);
+        return d >= today && d <= cutoff && rmActiveFilters.has(i.p);
+      });
       const months = {};
       visible.forEach(item => {
         const d = rmDate(item.date);
@@ -1273,10 +1322,13 @@
       const track = document.getElementById('rm-track');
       if (!track) return;
       const keys = Object.keys(months).sort();
-      if (!keys.length) { track.innerHTML='<div class="rm-empty">No upcoming features found in the next 3 months.</div>'; return; }
+      if (!keys.length) {
+        track.innerHTML = '<div class="rm-empty"><i class="ti ti-filter-off" style="font-size:28px;display:block;margin-bottom:10px;opacity:.4"></i>No features match the current filters in the next 3 months.</div>';
+        return;
+      }
       track.innerHTML = keys.map(key => {
-        const {d,items} = months[key];
-        const cards = items.map((item,i) => {
+        const {d, items: mi} = months[key];
+        const cards = mi.map((item, i) => {
           const uid = key+'-'+i;
           RM_MAP[uid] = item;
           const col = RM_PRODS[item.p]||'#888';
@@ -1292,8 +1344,81 @@
             </div>
           </div>`;
         }).join('');
-        return `<div class="rm-month"><div class="rm-month-hdr">${rmMonthLabel(d)}</div><div class="rm-month-body">${cards}</div></div>`;
+        return `<div class="rm-month"><div class="rm-month-hdr">${rmMonthLabel(d)} <span style="font-weight:400;opacity:.6">(${mi.length})</span></div><div class="rm-month-body">${cards}</div></div>`;
       }).join('');
+    }
+
+    function rmToggleFilter(prod, btn) {
+      if (rmActiveFilters.has(prod)) {
+        if (rmActiveFilters.size === 1) return; // keep at least one active
+        rmActiveFilters.delete(prod);
+        btn.classList.remove('active');
+      } else {
+        rmActiveFilters.add(prod);
+        btn.classList.add('active');
+      }
+      renderRoadmap();
+    }
+
+    function rmParseApiDate(str) {
+      if (!str) return null;
+      if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str;
+      const mo = {january:'01',february:'02',march:'03',april:'04',may:'05',june:'06',july:'07',august:'08',september:'09',october:'10',november:'11',december:'12',jan:'01',feb:'02',mar:'03',apr:'04',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+      const m = str.toLowerCase().match(/([a-z]+)\s+(?:cy)?(\d{4})/);
+      if (m && mo[m[1]]) return `${m[2]}-${mo[m[1]]}-01`;
+      return null;
+    }
+
+    async function rmRefresh() {
+      const btn = document.getElementById('rm-refresh-btn');
+      if (btn) { btn.disabled=true; btn.classList.add('spinning'); }
+      rmSetTimestamp('Fetching live data…');
+      try {
+        const resp = await fetch('https://www.microsoft.com/releasecommunications/api/v2/m365?responseFormat=json', {mode:'cors'});
+        if (!resp.ok) throw new Error('HTTP '+resp.status);
+        const data = await resp.json();
+        const targetProds = {'Microsoft Copilot (Microsoft 365)':'M365 Copilot','Microsoft Copilot Studio':'Copilot Studio','Power Automate':'Power Automate','Power Apps':'Power Apps'};
+        const validStatuses = new Set(['Rolling out','In development']);
+        const validPlatforms = new Set(['Desktop','Web']);
+        const rows = Array.isArray(data) ? data : (data.items || data.features || []);
+        const mapped = [];
+        rows.forEach(row => {
+          const prodTags = (row['Tags - Product'] || row.product || '').split(',').map(s=>s.trim());
+          const platTags = (row['Tags - Platform'] || row.platform || '').split(',').map(s=>s.trim());
+          const status = (row['Status'] || row.status || '').trim();
+          const matchProd = prodTags.find(pt => targetProds[pt]);
+          if (!matchProd) return;
+          if (!validStatuses.has(status)) return;
+          if (!platTags.some(pt => validPlatforms.has(pt))) return;
+          const rawDate = row['Release'] || row['General availability'] || row.releaseDate || '';
+          const date = rmParseApiDate(rawDate);
+          if (!date) return;
+          const title = row['Description'] || row.title || 'Untitled';
+          const desc = row['Details'] || row.details || title;
+          mapped.push({
+            p: targetProds[matchProd],
+            title,
+            sum: desc.length > 110 ? desc.substring(0,107)+'…' : desc,
+            desc,
+            status,
+            plat: platTags.filter(pt => validPlatforms.has(pt)).join(', '),
+            date,
+            url: row['More Info'] || row.moreInfoLink || `https://www.microsoft.com/en-gb/microsoft-365/roadmap?filters=&searchterms=${row['Feature ID']||row.id||''}`
+          });
+        });
+        if (mapped.length > 0) {
+          rmLiveItems = mapped;
+          renderRoadmap(mapped);
+          rmSetTimestamp('Live data · ' + new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}) + ' · ' + mapped.length + ' items');
+        } else {
+          throw new Error('No matching items in response');
+        }
+      } catch (err) {
+        renderRoadmap();
+        rmSetTimestamp('Live fetch unavailable · showing embedded data');
+      } finally {
+        if (btn) { btn.disabled=false; btn.classList.remove('spinning'); }
+      }
     }
 
     let rmTimer = null;
@@ -1336,7 +1461,7 @@
     function rmTipEnter() { clearTimeout(rmTimer); }
     function rmTipLeave() { rmTimer = setTimeout(()=>{ document.getElementById('rm-tooltip').style.display='none'; },150); }
 
-    (function(){ const t=document.getElementById('rm-track'); if(t) renderRoadmap(); })();
+    (function(){ if(document.getElementById('rm-track')) { renderRoadmap(); rmSetTimestamp('Embedded data · ' + new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})); } })();
     </script>
   </div><!-- /panel-roadmap -->
 
