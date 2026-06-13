@@ -372,6 +372,7 @@
     <button class="top-tab active" onclick="switchTopTab('panel-licensing', this)"><i class="ti ti-license"></i>Microsoft Licensing</button>
     <button class="top-tab" onclick="switchTopTab('panel-usage', this)"><i class="ti ti-chart-bar"></i>Copilot Usage Statistics</button>
     <button class="top-tab" onclick="switchTopTab('panel-roadmap', this)"><i class="ti ti-map-2"></i>Product Roadmap</button>
+    <button class="top-tab" onclick="switchTopTab('panel-agents', this)"><i class="ti ti-brain"></i>AI Agent Stack</button>
   </nav>
 
   <!-- PANEL: LICENSING -->
@@ -1466,6 +1467,205 @@
     (function(){ if(document.getElementById('rm-track')) { renderRoadmap(); rmSetTimestamp('Embedded data · ' + new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})); } })();
     </script>
   </div><!-- /panel-roadmap -->
+
+  <div id="panel-agents" class="panel">
+  <style>
+    #panel-agents { padding: 0; }
+    .agc-wrap { padding: 24px 32px 40px; }
+    .agc-header { text-align: center; margin-bottom: 28px; padding-top: 4px; }
+    .agc-title { font-size: 26px; font-weight: 800; letter-spacing: -.4px; color: var(--text-primary); margin: 0 0 6px; }
+    .agc-subtitle { font-size: 13px; color: var(--text-secondary); margin: 0; }
+    .agc-outer { overflow-x: auto; border: 1px solid var(--border-color); border-radius: 10px; }
+    .agc-table { width: 100%; border-collapse: collapse; min-width: 780px; }
+    /* per-column colour tokens */
+    .agc-m365   { --ac:#0078d4; --al:rgba(0,120,212,0.06); --gi:#0078d4; --g2:#00b4ef; }
+    .agc-cowork { --ac:#7719aa; --al:rgba(119,25,170,0.06); --gi:#7719aa; --g2:#c239f1; }
+    .agc-scout  { --ac:#5c2d91; --al:rgba(92,45,145,0.06); --gi:#5c2d91; --g2:#8661c5; }
+    .agc-studio { --ac:#038387; --al:rgba(3,131,135,0.06); --gi:#038387; --g2:#00c4c8; }
+    /* header row */
+    .agc-corner { width:150px; border-bottom:2px solid var(--border-color); background:var(--bg-subtle); }
+    .agc-col-hdr {
+      padding:22px 18px 18px; width:22%;
+      border-left:1px solid var(--border-color);
+      border-bottom:2px solid var(--border-color);
+      background:var(--al); text-align:center; vertical-align:top;
+    }
+    .agc-icon-ring {
+      width:60px; height:60px; border-radius:16px;
+      background:linear-gradient(135deg, var(--gi), var(--g2));
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 12px; color:#fff; font-size:28px; flex-shrink:0;
+    }
+    .agc-prod-name { font-size:15px; font-weight:700; color:var(--ac); margin-bottom:10px; }
+    .agc-badge {
+      display:inline-block; font-size:10px; font-weight:700;
+      letter-spacing:.5px; text-transform:uppercase;
+      color:#fff; padding:4px 12px; border-radius:20px;
+    }
+    /* row label column */
+    .agc-row-lbl {
+      padding:16px 14px; border-top:1px solid var(--border-color);
+      font-size:11px; font-weight:700; text-transform:uppercase;
+      letter-spacing:.5px; color:var(--text-secondary);
+      vertical-align:top; white-space:nowrap; background:var(--bg-subtle);
+    }
+    .agc-row-lbl i { font-size:18px; display:block; margin-bottom:5px; color:var(--text-tertiary); }
+    /* data cells */
+    .agc-cell {
+      padding:14px 16px; border-top:1px solid var(--border-color);
+      border-left:1px solid var(--border-color);
+      font-size:13px; line-height:1.6; color:var(--text-secondary);
+      vertical-align:top; background:var(--al);
+    }
+    /* list cells */
+    .agc-cell ul { margin:0; padding:0 0 0 16px; }
+    .agc-cell li { margin-bottom:2px; }
+    /* where-it-operates cells */
+    .agc-operates { display:flex; align-items:flex-start; gap:9px; }
+    .agc-operates > i { font-size:22px; color:var(--ac); flex-shrink:0; margin-top:1px; }
+    /* autonomy */
+    .agc-autonomy { display:flex; gap:5px; margin-bottom:8px; }
+    .agc-block { width:26px; height:14px; border-radius:3px; background:var(--border-color); }
+    .agc-block.on { background:var(--ac); }
+    .agc-auto-lbl { font-size:13px; font-weight:600; color:var(--text-primary); }
+    .agc-auto-sub { font-weight:400; font-size:12px; color:var(--text-secondary); }
+    /* In Simple Terms row */
+    .agc-simple-cell {
+      padding:18px 16px; text-align:center;
+      border-top:2px solid var(--border-color);
+      border-left:1px solid var(--border-color);
+      background:var(--al) !important;
+    }
+    .agc-simple-cell strong { font-size:15px; font-weight:800; color:var(--ac); display:block; margin-bottom:3px; }
+    .agc-simple-cell span { font-size:12px; color:var(--text-secondary); }
+    .agc-row-lbl-simple { border-top:2px solid var(--border-color); background:var(--bg-subtle); }
+    /* footer */
+    .agc-footer {
+      margin-top:22px; padding:15px 22px;
+      background:#162040; color:#fff; border-radius:10px;
+      font-size:13px; display:flex; align-items:center; gap:12px; line-height:1.5;
+    }
+    .agc-footer i { font-size:22px; color:#fbbf24; flex-shrink:0; }
+    .agc-footer strong { color:#fff; }
+  </style>
+  <div class="agc-wrap">
+    <div class="agc-header">
+      <div class="agc-title">Microsoft AI Agent Stack Comparison</div>
+      <div class="agc-subtitle">Different tools. Different strengths. Built for different layers of work.</div>
+    </div>
+    <div class="agc-outer">
+      <table class="agc-table">
+        <thead>
+          <tr>
+            <th class="agc-corner"></th>
+            <th class="agc-col-hdr agc-m365">
+              <div class="agc-icon-ring"><i class="ti ti-sparkles"></i></div>
+              <div class="agc-prod-name">M365 Copilot</div>
+              <span class="agc-badge" style="background:#0078d4">The Thinking Layer</span>
+            </th>
+            <th class="agc-col-hdr agc-cowork">
+              <div class="agc-icon-ring"><i class="ti ti-refresh-dot"></i></div>
+              <div class="agc-prod-name">Copilot Cowork</div>
+              <span class="agc-badge" style="background:#7719aa">The Execution Layer</span>
+            </th>
+            <th class="agc-col-hdr agc-scout">
+              <div class="agc-icon-ring"><i class="ti ti-eye"></i></div>
+              <div class="agc-prod-name">Microsoft Scout</div>
+              <span class="agc-badge" style="background:#5c2d91">The Autonomous Layer</span>
+            </th>
+            <th class="agc-col-hdr agc-studio">
+              <div class="agc-icon-ring"><i class="ti ti-building-factory-2"></i></div>
+              <div class="agc-prod-name">Copilot Studio</div>
+              <span class="agc-badge" style="background:#038387">The Agent Factory</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Primary Purpose -->
+          <tr>
+            <td class="agc-row-lbl"><i class="ti ti-target"></i>Primary Purpose</td>
+            <td class="agc-cell agc-m365">Helps you think, find information, and create content using Microsoft 365 data.</td>
+            <td class="agc-cell agc-cowork">Executes multi-step tasks across Microsoft 365 apps on your behalf.</td>
+            <td class="agc-cell agc-scout">Operates autonomously on your desktop, apps, and developer tools.</td>
+            <td class="agc-cell agc-studio">Builds, customizes, and extends AI agents and copilots for your organization.</td>
+          </tr>
+          <!-- Best For -->
+          <tr>
+            <td class="agc-row-lbl"><i class="ti ti-star"></i>Best For</td>
+            <td class="agc-cell agc-m365"><ul><li>Summarizing emails &amp; meetings</li><li>Drafting documents</li><li>Getting insights from M365 data</li><li>Answering questions</li></ul></td>
+            <td class="agc-cell agc-cowork"><ul><li>End-to-end business processes</li><li>Cross-app coordination</li><li>Approvals &amp; automation</li><li>Scheduled &amp; recurring work</li></ul></td>
+            <td class="agc-cell agc-scout"><ul><li>Local files &amp; desktop apps</li><li>Browser automation</li><li>Dev workflows (Git, builds, tests)</li><li>Background autonomous work</li></ul></td>
+            <td class="agc-cell agc-studio"><ul><li>Building custom AI agents</li><li>Automating business processes</li><li>Connecting enterprise systems</li><li>Extending Microsoft Copilot</li></ul></td>
+          </tr>
+          <!-- How It Works -->
+          <tr>
+            <td class="agc-row-lbl"><i class="ti ti-puzzle"></i>How It Works</td>
+            <td class="agc-cell agc-m365">Uses AI to generate responses and recommendations from your Microsoft 365 data.</td>
+            <td class="agc-cell agc-cowork">Breaks down your request into steps and takes actions across Outlook, Teams, SharePoint, OneDrive, and more.</td>
+            <td class="agc-cell agc-scout">Executes tasks directly on your machine and tools with high degrees of autonomy.</td>
+            <td class="agc-cell agc-studio">Low-code platform to design agents, define actions, connect data, and publish securely.</td>
+          </tr>
+          <!-- Where It Operates -->
+          <tr>
+            <td class="agc-row-lbl"><i class="ti ti-device-laptop"></i>Where It Operates</td>
+            <td class="agc-cell agc-m365"><div class="agc-operates"><i class="ti ti-cloud"></i><span>Microsoft 365 Cloud</span></div></td>
+            <td class="agc-cell agc-cowork"><div class="agc-operates"><i class="ti ti-cloud"></i><span>Microsoft 365 Cloud</span></div></td>
+            <td class="agc-cell agc-scout"><div class="agc-operates"><i class="ti ti-device-laptop"></i><span>Your Desktop &amp; Local Environment</span></div></td>
+            <td class="agc-cell agc-studio"><div class="agc-operates"><i class="ti ti-cloud"></i><span>Cloud + On-prem + Hybrid Systems</span></div></td>
+          </tr>
+          <!-- Level of Autonomy -->
+          <tr>
+            <td class="agc-row-lbl"><i class="ti ti-users"></i>Level of Autonomy</td>
+            <td class="agc-cell agc-m365">
+              <div class="agc-autonomy"><span class="agc-block on"></span><span class="agc-block"></span><span class="agc-block"></span><span class="agc-block"></span><span class="agc-block"></span></div>
+              <div class="agc-auto-lbl">Assistive</div>
+            </td>
+            <td class="agc-cell agc-cowork">
+              <div class="agc-autonomy"><span class="agc-block on"></span><span class="agc-block on"></span><span class="agc-block on"></span><span class="agc-block"></span><span class="agc-block"></span></div>
+              <div class="agc-auto-lbl">Semi-Autonomous <span class="agc-auto-sub">(with approval)</span></div>
+            </td>
+            <td class="agc-cell agc-scout">
+              <div class="agc-autonomy"><span class="agc-block on"></span><span class="agc-block on"></span><span class="agc-block on"></span><span class="agc-block on"></span><span class="agc-block"></span></div>
+              <div class="agc-auto-lbl">Highly Autonomous</div>
+            </td>
+            <td class="agc-cell agc-studio">
+              <div class="agc-autonomy"><span class="agc-block on"></span><span class="agc-block on"></span><span class="agc-block on"></span><span class="agc-block on"></span><span class="agc-block"></span></div>
+              <div class="agc-auto-lbl">Configurable by You</div>
+            </td>
+          </tr>
+          <!-- Integrations -->
+          <tr>
+            <td class="agc-row-lbl"><i class="ti ti-plug"></i>Integrations</td>
+            <td class="agc-cell agc-m365">Microsoft 365 apps, Graph, organizational data</td>
+            <td class="agc-cell agc-cowork">Outlook, Teams, SharePoint, OneDrive, Power Platform, Microsoft Graph</td>
+            <td class="agc-cell agc-scout">Local files, shell, browser, IDEs, Git, CLI tools, APIs</td>
+            <td class="agc-cell agc-studio">Dataverse, Power Platform, APIs, SAP, Salesforce, ServiceNow, custom systems &amp; more</td>
+          </tr>
+          <!-- Security & Governance -->
+          <tr>
+            <td class="agc-row-lbl"><i class="ti ti-shield-check"></i>Security &amp; Governance</td>
+            <td class="agc-cell agc-m365">Enterprise-grade security, compliance, and data protection in Microsoft 365</td>
+            <td class="agc-cell agc-cowork">Enterprise security with human-in-the-loop controls and auditability</td>
+            <td class="agc-cell agc-scout">Runs in user context with local permissions and enterprise policies</td>
+            <td class="agc-cell agc-studio">Enterprise-grade governance, roles, environment isolation, DLP, and compliance</td>
+          </tr>
+          <!-- In Simple Terms -->
+          <tr>
+            <td class="agc-row-lbl agc-row-lbl-simple"><i class="ti ti-trophy"></i>In Simple Terms</td>
+            <td class="agc-simple-cell agc-m365"><strong>Thinks with you.</strong><span>AI for insight and content.</span></td>
+            <td class="agc-simple-cell agc-cowork"><strong>Acts for you.</strong><span>AI that gets work done.</span></td>
+            <td class="agc-simple-cell agc-scout"><strong>Operates for you.</strong><span>AI that works on your machine.</span></td>
+            <td class="agc-simple-cell agc-studio"><strong>Builds for you.</strong><span>AI agents tailored to your business.</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="agc-footer">
+      <i class="ti ti-bulb"></i>
+      Together, these tools form the <strong>Microsoft AI agent stack</strong> – from thought to action to automation to creation.
+    </div>
+  </div>
+  </div><!-- /panel-agents -->
 
 </div><!-- /shell -->
 
