@@ -1199,6 +1199,19 @@
       .rm-filt.active { background: var(--fc,#888); color:#fff; }
       .rm-filt:not(.active) { opacity:.45; }
       .rm-filt:hover { opacity:1; }
+      .rm-filter-sep { width:1px; background:var(--border-subtle,#ddd); align-self:stretch; margin:0 6px; flex-shrink:0; }
+      .rm-sfilt {
+        display:flex; align-items:center; gap:6px;
+        padding:5px 13px; border-radius:20px;
+        font-size:12px; font-weight:600; cursor:pointer;
+        border:2px solid var(--fc,#888);
+        background:transparent; color:var(--text-secondary);
+        transition:background .15s, color .15s, opacity .15s;
+      }
+      .rm-sfilt::before { content:''; display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--fc,#888); flex-shrink:0; }
+      .rm-sfilt.active { background:var(--fc,#888); color:#fff; }
+      .rm-sfilt:not(.active) { opacity:.45; }
+      .rm-sfilt:hover { opacity:1; }
       .rm-actions { display: flex; align-items: center; gap: 10px; }
       .rm-timestamp { font-size: 11px; color: var(--text-tertiary); white-space: nowrap; }
       .rm-refresh-btn {
@@ -1226,6 +1239,9 @@
           <button class="rm-filt active" style="--fc:#7719aa" onclick="rmToggleFilter('Copilot Studio',this)">Copilot Studio</button>
           <button class="rm-filt active" style="--fc:#038387" onclick="rmToggleFilter('Power Automate',this)">Power Automate</button>
           <button class="rm-filt active" style="--fc:#ae3a88" onclick="rmToggleFilter('Power Apps',this)">Power Apps</button>
+          <span class="rm-filter-sep"></span>
+          <button class="rm-sfilt active" style="--fc:#107c10" onclick="rmToggleStatus('Rolling out',this)">Rolling Out</button>
+          <button class="rm-sfilt active" style="--fc:#e07a00" onclick="rmToggleStatus('In development',this)">In Development</button>
         </div>
         <div class="rm-actions">
           <span class="rm-timestamp" id="rm-timestamp"></span>
@@ -1293,7 +1309,8 @@
     ];
 
     const RM_MAP = {};
-    let rmActiveFilters = new Set(['M365 Copilot','Copilot Studio','Power Automate','Power Apps']);
+    let rmActiveFilters  = new Set(['M365 Copilot','Copilot Studio','Power Automate','Power Apps']);
+    let rmActiveStatuses = new Set(['Rolling out','In development']);
     let rmLiveItems = null; // populated on successful refresh
 
     function rmDate(s) { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); }
@@ -1311,7 +1328,7 @@
       const end   = new Date(today.getFullYear(), today.getMonth() + 5, 0); // last day, 4 months ahead
       const visible = items.filter(i => {
         const d = rmDate(i.date);
-        return d >= start && d <= end && rmActiveFilters.has(i.p);
+        return d >= start && d <= end && rmActiveFilters.has(i.p) && rmActiveStatuses.has(i.status);
       });
       const months = {};
       visible.forEach(item => {
@@ -1351,11 +1368,23 @@
 
     function rmToggleFilter(prod, btn) {
       if (rmActiveFilters.has(prod)) {
-        if (rmActiveFilters.size === 1) return; // keep at least one active
+        if (rmActiveFilters.size === 1) return;
         rmActiveFilters.delete(prod);
         btn.classList.remove('active');
       } else {
         rmActiveFilters.add(prod);
+        btn.classList.add('active');
+      }
+      renderRoadmap();
+    }
+
+    function rmToggleStatus(status, btn) {
+      if (rmActiveStatuses.has(status)) {
+        if (rmActiveStatuses.size === 1) return;
+        rmActiveStatuses.delete(status);
+        btn.classList.remove('active');
+      } else {
+        rmActiveStatuses.add(status);
         btn.classList.add('active');
       }
       renderRoadmap();
