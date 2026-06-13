@@ -1218,7 +1218,7 @@
     <div class="rm-wrap">
       <div class="rm-hdr">
         <h2><i class="ti ti-map-2" style="font-size:20px;vertical-align:-2px;margin-right:6px;"></i>Product Roadmap</h2>
-        <p>Features from the current and previous month &mdash; sourced from the <a href="https://www.microsoft.com/en-gb/microsoft-365/roadmap" target="_blank" rel="noopener">Microsoft 365 Roadmap</a> and <a href="https://learn.microsoft.com/en-us/power-platform/release-plan/2026wave1/" target="_blank" rel="noopener">2026 Release Wave 1</a>. Hover any card for full details.</p>
+        <p>Features rolling out in the previous 2 months and next 4 months &mdash; sourced from the <a href="https://www.microsoft.com/en-gb/microsoft-365/roadmap" target="_blank" rel="noopener">Microsoft 365 Roadmap</a> and <a href="https://learn.microsoft.com/en-us/power-platform/release-plan/2026wave1/" target="_blank" rel="noopener">2026 Release Wave 1</a>. Hover any card for full details.</p>
       </div>
       <div class="rm-toolbar">
         <div class="rm-filters">
@@ -1307,8 +1307,8 @@
     function renderRoadmap(sourceItems) {
       const items = sourceItems || rmLiveItems || RM_ITEMS;
       const today = new Date(); today.setHours(0,0,0,0);
-      const start = new Date(today.getFullYear(), today.getMonth() - 1, 1); // 1st of previous month
-      const end   = new Date(today.getFullYear(), today.getMonth() + 1, 0); // last day of current month
+      const start = new Date(today.getFullYear(), today.getMonth() - 2, 1); // 1st, 2 months ago
+      const end   = new Date(today.getFullYear(), today.getMonth() + 5, 0); // last day, 4 months ahead
       const visible = items.filter(i => {
         const d = rmDate(i.date);
         return d >= start && d <= end && rmActiveFilters.has(i.p);
