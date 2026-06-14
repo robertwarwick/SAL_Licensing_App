@@ -346,6 +346,106 @@
     border-color: var(--border-med) !important;
     color: var(--text-primary);
   }
+
+  /* ── TYPOGRAPHY REFINEMENTS ── */
+  body { line-height: 1.6; font-size: 14px; }
+  .product-title { font-size: 24px; font-weight: 700; letter-spacing: -.3px; }
+  .product-subtitle { font-size: 14px; line-height: 1.65; }
+  .product-header { margin-bottom: 26px; padding-bottom: 22px; gap: 16px; }
+  .product-icon { width: 48px; height: 48px; border-radius: 12px; font-size: 22px; }
+  .sku-price { font-size: 28px; font-weight: 800; }
+  .sku-name { font-size: 13px; font-weight: 600; letter-spacing: -.1px; }
+  .sku-price-unit { margin-bottom: 14px; }
+  .feat li { font-size: 12.5px; line-height: 1.55; color: var(--text-secondary); }
+  .section-label { margin: 26px 0 13px; letter-spacing: .1em; }
+  .nav-group-label { padding: 14px 18px 6px; }
+  .nav-item { padding: 9px 18px; font-size: 13px; }
+  .main { padding: 32px 36px; }
+
+  /* ── CARD POLISH ── */
+  .sku-card {
+    border-radius: 14px;
+    transition: box-shadow .2s, transform .2s;
+    padding: 18px;
+  }
+  .sku-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+    transform: translateY(-2px);
+  }
+  [data-theme="dark"] .sku-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .sku-card.featured {
+    border-top: 3px solid #0078d4;
+    border-left: 2px solid var(--border-info);
+    border-right: 2px solid var(--border-info);
+    border-bottom: 2px solid var(--border-info);
+  }
+
+  /* ── HERO BANNER ── */
+  .hero-banner {
+    background: linear-gradient(135deg, #0050b8 0%, #003d8f 45%, #002570 100%);
+    padding: 22px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-banner::after {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    pointer-events: none;
+  }
+  .hero-banner::before {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: 200px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.04);
+    pointer-events: none;
+  }
+  [data-theme="dark"] .hero-banner {
+    background: linear-gradient(135deg, #0a1a38 0%, #061228 45%, #040d1e 100%);
+  }
+  .hero-inner {
+    display: flex; align-items: center; gap: 18px;
+    position: relative; z-index: 1;
+  }
+  .hero-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 26px; flex-shrink: 0;
+  }
+  .hero-text { flex: 1; min-width: 0; }
+  .hero-title {
+    font-size: 20px; font-weight: 700; color: #fff;
+    letter-spacing: -.3px; margin-bottom: 3px;
+  }
+  .hero-sub {
+    font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5;
+  }
+  .hero-chips {
+    display: flex; gap: 7px; flex-wrap: wrap; flex-shrink: 0;
+  }
+  .hero-chip {
+    display: flex; align-items: center; gap: 5px;
+    padding: 5px 12px; border-radius: 20px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.88);
+    font-size: 12px; font-weight: 500; white-space: nowrap;
+  }
+  .hero-chip i { font-size: 13px; }
+  @media (max-width: 640px) {
+    .hero-chips { display: none; }
+    .hero-title { font-size: 17px; }
+    .hero-banner { padding: 18px 20px; }
+  }
 </style>
 </head>
 <body>
@@ -366,6 +466,23 @@
       <div class="toggle-track"><div class="toggle-knob"></div></div>
     </button>
   </header>
+
+  <!-- HERO BANNER -->
+  <div class="hero-banner">
+    <div class="hero-inner">
+      <div class="hero-icon"><i class="ti ti-sparkles"></i></div>
+      <div class="hero-text">
+        <div class="hero-title">Smart Automation Lab</div>
+        <div class="hero-sub">Microsoft AI licensing, usage analytics, product roadmap &amp; agent stack — all in one place</div>
+      </div>
+      <div class="hero-chips">
+        <span class="hero-chip"><i class="ti ti-license"></i>Licensing</span>
+        <span class="hero-chip"><i class="ti ti-chart-bar"></i>Analytics</span>
+        <span class="hero-chip"><i class="ti ti-map-2"></i>Roadmap</span>
+        <span class="hero-chip"><i class="ti ti-brain"></i>AI Stack</span>
+      </div>
+    </div>
+  </div>
 
   <!-- TOP-LEVEL TABS -->
   <nav class="top-tabs" aria-label="Section navigation">
